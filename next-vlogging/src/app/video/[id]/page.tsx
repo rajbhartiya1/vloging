@@ -7,8 +7,8 @@ import ActionRibbon from "@/components/ActionRibbon";
 import DescriptionBox from "@/components/DescriptionBox";
 import CreatorBadge from "@/components/CreatorBadge";
 import { notFound } from "next/navigation";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 // Next.js 15 valid type signature for params
 export default async function VideoPage({

@@ -3,7 +3,7 @@
 import { useShopStore } from "@/store/shopStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, ShoppingBag } from "lucide-react";
-import { Button } from "./ui/Button";
+import { Button } from "./ui/button";
 
 export default function CartDrawer() {
   const { cart, isCartOpen, toggleCart, removeFromCart, updateQuantity, cartTotal } = useShopStore();

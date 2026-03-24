@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Badge } from './ui/Badge';
+import { Badge } from './ui/badge';
 
 const mockEpisodes = [
   { id: 1, title: 'Preparing for the Journey', duration: '12:40', active: true, thumb: 'bg-indigo-300' },

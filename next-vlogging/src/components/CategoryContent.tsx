@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import VideoCard from "@/components/VideoCard";
 import { type Video } from "@/lib/data";
-import { Badge } from "@/components/ui/Badge";
+import { Badge } from "@/components/ui/badge";
 import { Loader2, ArrowUpDown, Clock, Flame } from "lucide-react";
 
 interface CategoryContentProps {

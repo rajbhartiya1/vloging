@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { ThumbsUp, MessageSquare, Share2, MoreHorizontal, Image as ImageIcon, ChartBar } from "lucide-react";
@@ -11,7 +11,7 @@ const communityPosts = [
     id: "1",
     author: { name: "VlogHub", handle: "@vloghub", avatar: "V" },
     date: new Date(Date.now() - 1000 * 60 * 60 * 2),
-    content: "What location should I visit next for the ultimate street food guide? Let me know in the comments! 🌍🍜",
+    content: "What location should I visit next for the ultimate street food guide? Let me know in the comments! ????",
     type: "poll",
     pollOptions: [
       { id: "p1", text: "Bangkok, Thailand", votes: 450 },
@@ -36,7 +36,7 @@ const communityPosts = [
     id: "3",
     author: { name: "VlogHub", handle: "@vloghub", avatar: "V" },
     date: new Date(Date.now() - 1000 * 60 * 60 * 48),
-    content: "Quick tip for creators: Always carry an extra charged battery and an ND filter. The lighting can change in seconds when you're shooting outdoors! ☀️📸",
+    content: "Quick tip for creators: Always carry an extra charged battery and an ND filter. The lighting can change in seconds when you're shooting outdoors! ????",
     type: "text",
     likes: 3200,
     comments: 154,
@@ -64,7 +64,7 @@ function PostCard({ post }: { post: any }) {
             <h4 className="font-semibold text-zinc-900 dark:text-zinc-100">{post.author.name}</h4>
             <div className="flex items-center text-sm text-zinc-500 gap-2">
               <span>{post.author.handle}</span>
-              <span>•</span>
+              <span>?</span>
               <span>{formatDistanceToNow(post.date)} ago</span>
             </div>
           </div>

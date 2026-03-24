@@ -11,6 +11,7 @@ import { Button } from "./ui/button";
 
 export default function Navbar() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -188,7 +189,7 @@ export default function Navbar() {
               </div>
               <form className="flex flex-col gap-5" onSubmit={(e) => {
                   e.preventDefault();
-                  setUser({ email: "test@vloghub.com" });
+                  setUser({ email: "test@vloghub.com", name: "New User" });
                   toggleAuthModal();
               }}>
                 <div className="space-y-4">

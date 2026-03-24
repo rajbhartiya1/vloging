@@ -34,12 +34,12 @@ export default function Home() {
       className="space-y-16 pb-24 md:pb-12"
     >
       {/* Featured Hero Carousel section */}
-      <motion.section variants={itemVariants}>
+      <motion.section variants={itemVariants} className="max-w-[1400px] mx-auto px-4 w-full">
         <HeroSlider />
       </motion.section>
 
       {/* Creator Badge (Inline Bio) */}
-      <motion.section variants={itemVariants} className="max-w-2xl mx-auto md:-mt-8 relative z-10 px-4">
+      <motion.section variants={itemVariants} className="max-w-3xl mx-auto md:-mt-12 relative z-10 px-4">
         <CreatorBadge />
       </motion.section>
 
@@ -50,14 +50,18 @@ export default function Home() {
       </motion.section>
 
       {/* Latest Vlogs */}
-      <motion.section variants={itemVariants} className="px-4 max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8 text-gray-900 border-none dark:text-gray-100">
-          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">Latest Vlogs</h2>
-          <Link href="/category/lifestyle" className="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline flex items-center gap-1 text-sm md:text-base">
-            View All <span aria-hidden="true">&rarr;</span>
+      <motion.section variants={itemVariants} className="px-4 max-w-7xl mx-auto w-full">
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-500 dark:from-white dark:to-gray-400">Latest Drops</h2>
+            <p className="text-gray-500 font-medium mt-2">Fresh content just for you.</p>
+          </div>
+          <Link href="/category/lifestyle" className="group flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 rounded-full font-bold transition-all transform hover:scale-105">
+            View All 
+            <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">&rarr;</span>
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
           {latestVideos.map((video) => (
             <VideoCard key={video.id} video={video} />
           ))}
@@ -65,11 +69,14 @@ export default function Home() {
       </motion.section>
 
       {/* Trending */}
-      <motion.section variants={itemVariants} className="px-4 max-w-7xl mx-auto">
-        <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-8 text-gray-900 dark:text-gray-100 flex items-center gap-2">
-          Trending Now <span className="text-2xl">??</span>
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <motion.section variants={itemVariants} className="px-4 max-w-7xl mx-auto w-full">
+        <div className="mb-10 text-center md:text-left">
+          <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-gray-900 dark:text-gray-100 flex items-center justify-center md:justify-start gap-3">
+            Trending Now <span className="inline-block animate-bounce text-4xl mt-1">🔥</span>
+          </h2>
+          <p className="text-gray-500 font-medium mt-2">What everyone is watching right now.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
           {trendingVideos.map((video) => (
             <VideoCard key={video.id} video={video} />
           ))}

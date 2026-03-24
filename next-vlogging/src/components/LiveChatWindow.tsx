@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from './ui/Button';
-import { Input } from './ui/Input';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 const mockChats = [
   { id: 1, user: 'TravelBug', message: 'Omg that view is amazing! 😍', isSponsor: true },

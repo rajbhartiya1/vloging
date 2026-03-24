@@ -2,7 +2,7 @@
 
 import { useUserDataStore } from "@/store/userDataStore";
 import { ThumbsUp, ThumbsDown, Share2, Save, Download } from "lucide-react";
-import { Button } from "./ui/Button";
+import { Button } from "./ui/button";
 
 interface ActionRibbonProps {
   videoId: string;

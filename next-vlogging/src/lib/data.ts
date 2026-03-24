@@ -8,6 +8,8 @@ export type Video = {
   tags: string[];
   thumbnail: string;
   date: string;
+  author?: string;
+  duration?: string;
 };
 
 export const videos: Video[] = [

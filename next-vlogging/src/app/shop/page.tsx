@@ -1,8 +1,8 @@
-﻿"use client";
+"use client";
 
 import { useShopStore } from "@/store/shopStore";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Copy, CheckCircle2, ShoppingCart, X } from "lucide-react";
 import { useState } from "react";
 import CartDrawer from "@/components/CartDrawer";
