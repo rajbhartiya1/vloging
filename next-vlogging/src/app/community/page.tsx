@@ -1,133 +1,193 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
-import { ThumbsUp, MessageSquare, Share2, MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { ThumbsUp, MessageSquare, Share2, MoreHorizontal, Image as ImageIcon, ChartBar } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { formatDistanceToNow } from "date-fns";
+import { motion } from "framer-motion";
 
-const POSTS = [
+const communityPosts = [
   {
-    id: 1,
-    author: "Alex",
-    avatar: "bg-indigo-500",
-    time: "2 hours ago",
-    content: "Just landed in Tokyo! 🇯ᱯ The vlog is going to be insane. Here's a sneak peek of the view from my hotel. Should I do a separate gear review for the travel setup?",
-    image: "bg-gradient-to-br from-blue-900 to-indigo-900",
+    id: "1",
+    author: { name: "VlogHub", handle: "@vloghub", avatar: "V" },
+    date: new Date(Date.now() - 1000 * 60 * 60 * 2),
+    content: "What location should I visit next for the ultimate street food guide? Let me know in the comments! 🌍🍜",
+    type: "poll",
+    pollOptions: [
+      { id: "p1", text: "Bangkok, Thailand", votes: 450 },
+      { id: "p2", text: "Osaka, Japan", votes: 890 },
+      { id: "p3", text: "Mexico City, Mexico", votes: 320 },
+      { id: "p4", text: "Istanbul, Turkey", votes: 210 },
+    ],
     likes: 1205,
-    comments: 84
+    comments: 342,
   },
   {
-    id: 2,
-    author: "Alex",
-    avatar: "bg-indigo-500",
-    time: "Yesterday",
-    content: "Poll time: What should be the focus of next week's video?",
-    poll: [
-      { option: "Editing Tutorial", votes: 45 },
-      { option: "Day in the Life", votes: 20 },
-      { option: "Tech Review", votes: 35 },
-    ],
-    likes: 340,
-    comments: 112
+    id: "2",
+    author: { name: "VlogHub", handle: "@vloghub", avatar: "V" },
+    date: new Date(Date.now() - 1000 * 60 * 60 * 24),
+    content: "Just dropped a new vlog discussing the gear I use for 2026. A lot has changed since my last setup video. Check it out!",
+    type: "image",
+    imageUrl: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1000&auto=format&fit=crop",
+    likes: 5400,
+    comments: 890,
+  },
+  {
+    id: "3",
+    author: { name: "VlogHub", handle: "@vloghub", avatar: "V" },
+    date: new Date(Date.now() - 1000 * 60 * 60 * 48),
+    content: "Quick tip for creators: Always carry an extra charged battery and an ND filter. The lighting can change in seconds when you're shooting outdoors! ☀️📸",
+    type: "text",
+    likes: 3200,
+    comments: 154,
   }
 ];
 
-export default function CommunityPage() {
-  const [posts, setPosts] = useState(POSTS);
-
-  // Simple poll interaction mock
-  const handleVote = (postId: number, optionIndex: number) => {
-    setPosts(posts.map(post => {
-      if (post.id === postId && post.poll) {
-        const newPoll = [...post.poll];
-        newPoll[optionIndex].votes += 1;
-        return { ...post, poll: newPoll };
-      }
-      return post;
-    }));
-  };
+function PostCard({ post }: { post: any }) {
+  const [votedOption, setVotedOption] = useState<string | null>(null);
+  const [isLiked, setIsLiked] = useState(false);
+  const totalVotes = post.pollOptions ? post.pollOptions.reduce((acc: number, opt: any) => acc + opt.votes, 0) : 0;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8 pb-12">
-      <div className="mb-10">
-         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-gray-900 dark:text-gray-100">
-           Community
-         </h1>
-         <p className="text-gray-600 dark:text-gray-400 text-lg">Connect with the creator and other subscribers.</p>
-      </div>
-
-      {posts.map((post) => (
-        <div key={post.id} className="bg-white dark:bg-zinc-900 rounded-[2rem] p-6 md:p-8 shadow-sm border border-gray-200 dark:border-zinc-800">
-          {/* Header */}
-          <div className="flex justify-between items-start mb-6">
-            <div className="flex gap-4 items-center">
-              <div className={`w-12 h-12 rounded-full ${post.avatar} flex items-center justify-center text-white font-bold text-lg shadow-inner`}>
-                {post.author[0]}
-              </div>
-              <div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-100">{post.author}</h3>
-                <span className="text-sm text-gray-500 dark:text-gray-400">{post.time}</span>
-              </div>
-            </div>
-            <button className="text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
-              <MoreHorizontal />
-            </button>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 sm:p-6 mb-6 shadow-sm"
+    >
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-xl">
+            {post.author.avatar}
           </div>
-
-          {/* Content */}
-          <p className="text-lg text-gray-800 dark:text-gray-200 mb-6 whitespace-pre-wrap leading-relaxed">
-            {post.content}
-          </p>
-
-          {/* Image Attachment */}
-          {post.image && (
-            <div className={`w-full aspect-video rounded-2xl ${post.image} mb-6 flex items-center justify-center opacity-90`}>
-              {/* Fallback pattern */}
-              <span className="text-white/20 text-4xl font-bold tracking-widest">TOKYO_001.RAW</span>
+          <div>
+            <h4 className="font-semibold text-zinc-900 dark:text-zinc-100">{post.author.name}</h4>
+            <div className="flex items-center text-sm text-zinc-500 gap-2">
+              <span>{post.author.handle}</span>
+              <span>•</span>
+              <span>{formatDistanceToNow(post.date)} ago</span>
             </div>
-          )}
-
-          {/* Poll Attachment */}
-          {post.poll && (
-            <div className="space-y-3 mb-6">
-              {post.poll.map((p, idx) => {
-                const totalVotes = post.poll!.reduce((acc, curr) => acc + curr.votes, 0);
-                const percent = Math.round((p.votes / totalVotes) * 100);
-                
-                return (
-                  <button 
-                    key={idx}
-                    onClick={() => handleVote(post.id, idx)}
-                    className="relative w-full overflow-hidden rounded-xl border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-950 p-4 text-left transition-all hover:border-indigo-500 group"
-                  >
-                    <div 
-                      className="absolute inset-y-0 left-0 bg-indigo-100 dark:bg-indigo-900/30 transition-all duration-500"
-                      style={{ width: `${percent}%` }}
-                    />
-                    <div className="relative flex justify-between items-center z-10 font-medium">
-                      <span className="text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">{p.option}</span>
-                      <span className="text-gray-500">{percent}%</span>
-                    </div>
-                  </button>
-                )
-              })}
-              <p className="text-sm text-gray-500 mt-2">{post.poll.reduce((acc, curr) => acc + curr.votes, 0)} total votes</p>
-            </div>
-          )}
-
-          {/* Footer Actions */}
-          <div className="flex gap-2 pt-4 border-t border-gray-100 dark:border-zinc-800">
-            <Button variant="ghost" className="flex-1 rounded-xl text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 gap-2">
-              <ThumbsUp size={18} /> {post.likes}
-            </Button>
-            <Button variant="ghost" className="flex-1 rounded-xl text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 gap-2">
-              <MessageSquare size={18} /> {post.comments}
-            </Button>
-            <Button variant="ghost" className="flex-none px-4 rounded-xl text-gray-600 dark:text-gray-400">
-              <Share2 size={18} />
-            </Button>
           </div>
         </div>
-      ))}
+        <button className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 p-2">
+          <MoreHorizontal size={20} />
+        </button>
+      </div>
+
+      <p className="text-zinc-800 dark:text-zinc-200 mb-4 whitespace-pre-wrap leading-relaxed">
+        {post.content}
+      </p>
+
+      {post.type === 'image' && post.imageUrl && (
+        <div className="rounded-xl overflow-hidden mb-4 border border-zinc-100 dark:border-zinc-800">
+          <img src={post.imageUrl} alt="Post content" className="w-full h-auto max-h-[500px] object-cover" />
+        </div>
+      )}
+
+      {post.type === 'poll' && post.pollOptions && (
+        <div className="space-y-3 mb-4">
+          {post.pollOptions.map((option: any) => {
+            const percentage = Math.round((option.votes / totalVotes) * 100) || 0;
+            const isVoted = votedOption === option.id;
+            return (
+              <div 
+                key={option.id}
+                onClick={() => setVotedOption(option.id)}
+                className={cn(
+                  "relative h-10 rounded-lg overflow-hidden border cursor-pointer transition-colors flex items-center px-4",
+                  isVoted ? "border-indigo-500 bg-indigo-500/10" : "border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                )}
+              >
+                {votedOption && (
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${percentage}%` }}
+                    className={cn(
+                      "absolute top-0 left-0 h-full opacity-20 dark:opacity-40 pointer-events-none",
+                      isVoted ? "bg-indigo-500" : "bg-zinc-400 dark:bg-zinc-600"
+                    )}
+                  />
+                )}
+                <div className="relative z-10 flex justify-between w-full font-medium">
+                  <span className={cn(isVoted ? "text-indigo-700 dark:text-indigo-400" : "text-zinc-700 dark:text-zinc-300")}>
+                    {option.text}
+                  </span>
+                  {votedOption && <span className="text-zinc-500">{percentage}%</span>}
+                </div>
+              </div>
+            );
+          })}
+          <p className="text-xs text-zinc-500 mt-2">{totalVotes.toLocaleString()} votes</p>
+        </div>
+      )}
+
+      <div className="flex items-center gap-6 mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+        <button 
+          onClick={() => setIsLiked(!isLiked)}
+          className={cn(
+            "flex items-center gap-2 group transition-colors",
+            isLiked ? "text-red-500" : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+          )}
+        >
+          <ThumbsUp size={20} className={cn("group-hover:scale-110 transition-transform", isLiked && "fill-current")} />
+          <span className="font-medium">{isLiked ? post.likes + 1 : post.likes}</span>
+        </button>
+        <button className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 group transition-colors">
+          <MessageSquare size={20} className="group-hover:scale-110 transition-transform" />
+          <span className="font-medium">{post.comments}</span>
+        </button>
+        <button className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 ml-auto group transition-colors">
+          <Share2 size={20} className="group-hover:scale-110 transition-transform" />
+          <span className="hidden sm:inline font-medium">Share</span>
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function CommunityPage() {
+  return (
+    <div className="min-h-screen py-10 md:py-20 px-4 mt-16 md:mt-20">
+      <div className="max-w-2xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-black mb-3 text-zinc-900 dark:text-zinc-100">Community</h1>
+          <p className="text-zinc-600 dark:text-zinc-400">Updates, polls, and behind-the-scenes content.</p>
+        </div>
+
+        {/* Create Post Input (Mock) */}
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 sm:p-6 mb-10 shadow-sm flex gap-4">
+          <div className="w-12 h-12 rounded-full border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center shrink-0">
+            <span className="text-zinc-400 text-xs">You</span>
+          </div>
+          <div className="flex-1">
+             <input 
+               type="text" 
+               placeholder="Write an update..." 
+               className="w-full bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all mb-3"
+             />
+             <div className="flex items-center justify-between">
+               <div className="flex gap-2">
+                 <button className="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
+                   <ImageIcon size={20} />
+                 </button>
+                 <button className="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
+                   <ChartBar size={20} />
+                 </button>
+               </div>
+               <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg font-medium transition-colors">
+                 Post
+               </button>
+             </div>
+          </div>
+        </div>
+
+        {/* Feed */}
+        <div className="space-y-6">
+          {communityPosts.map((post) => (
+             <PostCard key={post.id} post={post} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

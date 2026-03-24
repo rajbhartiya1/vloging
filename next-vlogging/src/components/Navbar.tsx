@@ -2,13 +2,15 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Menu, X, User, Search } from "lucide-react";
+import { Moon, Sun, Menu, X, User, Search, Settings, Heart, History, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchOverlay from "./SearchOverlay";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { Button } from "./ui/button";
 
 export default function Navbar() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -17,7 +19,7 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
 
   // Note: Implementing minimal fake auth just for UI, replace with real auth later.
-  const [user, setUser] = useState<{ email: string } | null>(null);
+  const [user, setUser] = useState<{ email: string, name: string } | null>({ email: "user@vloghub.com", name: "Alex Vlogger" });
 
   useEffect(() => {
     setMounted(true);
@@ -31,50 +33,76 @@ export default function Navbar() {
 
   return (
     <>
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? "glass" : "bg-transparent"} py-4`}>
+      <header className={`sticky top-0 z-50 transition-all duration-300 border-b border-transparent ${isScrolled ? "bg-white/70 dark:bg-black/70 backdrop-blur-xl border-gray-200 dark:border-white/10 shadow-sm" : "bg-transparent"} py-3`}>
         <nav className="max-w-7xl mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
-          <div className="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">
-            <Link href="/">🚀 VlogHub</Link>
+          <div className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 hover:scale-105 transition-transform">
+            <Link href="/" className="flex items-center gap-2">
+              <span className="text-3xl filter drop-shadow-sm">🎥</span> VlogHub
+            </Link>
           </div>
           
           {/* Desktop Navigation */}
-          <ul className="hidden md:flex items-center gap-6 font-medium">
-            <li><Link href="/" className="hover:text-indigo-500 transition-colors">Home</Link></li>
-            <li><Link href="/about" className="hover:text-indigo-500 transition-colors">About</Link></li>
-            <li><Link href="/contact" className="hover:text-indigo-500 transition-colors">Contact</Link></li>
+          <ul className="hidden md:flex items-center gap-2 font-medium">
+            <li><Link href="/" className="px-4 py-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200 transition-colors text-sm font-semibold">Home</Link></li>
+            <li><Link href="/about" className="px-4 py-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200 transition-colors text-sm font-semibold">About</Link></li>
+            <li><Link href="/contact" className="px-4 py-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200 transition-colors text-sm font-semibold">Contact</Link></li>
             
-            <li className="h-6 w-px bg-gray-300 dark:bg-gray-700 mx-2"></li>
+            <li className="h-6 w-px bg-gray-300 dark:bg-gray-700 mx-2 hidden lg:block"></li>
 
             <li>
-              <button 
-                onClick={() => setIsSearchOpen(true)} 
-                className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors flex items-center justify-center text-gray-700 dark:text-gray-300"
-              >
-                <Search size={20} />
-              </button>
+              <Button variant="ghost" size="icon" className="rounded-full rounded-full w-10 h-10" onClick={() => setIsSearchOpen(true)}>
+                <Search size={18} />
+              </Button>
             </li>
 
             {mounted && (
               <li>
-                <button 
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
-                  className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
-                >
-                  {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-                </button>
+                <Button variant="ghost" size="icon" className="rounded-full w-10 h-10" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+                  {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                </Button>
               </li>
             )}
             
             {user ? (
-              <li className="flex items-center gap-4">
-                <span className="text-sm border border-gray-200 dark:border-gray-800 px-3 py-1.5 rounded-full">{user.email}</span>
-                <button onClick={handleLogout} className="text-sm bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-full hover:opacity-90 transition-opacity">Logout</button>
+              <li className="ml-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full px-0 hover:ring-2 hover:ring-indigo-500 transition-all">
+                      <Avatar className="h-10 w-10 border-2 border-white dark:border-zinc-900 shadow-sm">
+                        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} alt={user.name} />
+                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">{user.name}</p>
+                        <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/profile" className="cursor-pointer flex items-center"><User className="mr-2 h-4 w-4" /> Profile</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/library/liked" className="cursor-pointer flex items-center"><Heart className="mr-2 h-4 w-4" /> Liked Vlogs</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/library/watch-later" className="cursor-pointer flex items-center"><Clock className="mr-2 h-4 w-4" /> Watch Later</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600 dark:text-red-400 cursor-pointer flex items-center">
+                      Log out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </li>
             ) : (
-              <li>
-                <button onClick={toggleAuthModal} className="text-sm bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-full transition-colors flex items-center gap-2">
-                  <User size={16} /> Sign In
-                </button>
+              <li className="ml-2">
+                <Button onClick={toggleAuthModal} className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-md hover:shadow-lg transition-all" size="sm">
+                  <User size={16} className="mr-2" /> Sign In
+                </Button>
               </li>
             )}
           </ul>

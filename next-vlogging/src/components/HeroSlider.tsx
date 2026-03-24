@@ -5,6 +5,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "./ui/Button";
 import { Badge } from "./ui/Badge";
 
@@ -15,24 +16,24 @@ const featuredVlogs = [
     title: "Exploring the Secret Temples of Kyoto",
     category: "Travel",
     duration: "14:20",
-    image: "bg-indigo-900", // Placeholder for actual image
-    gradient: "from-indigo-500/80 to-purple-900/80"
+    image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1600&q=80",
+    gradient: "from-indigo-500/60 to-purple-900/80"
   },
   {
     id: "f2",
     title: "My Ultimate Desk Setup 2026",
     category: "Tech",
     duration: "08:45",
-    image: "bg-blue-900",
-    gradient: "from-blue-500/80 to-slate-900/80"
+    image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=1600&q=80",
+    gradient: "from-blue-500/60 to-slate-900/80"
   },
   {
     id: "f3",
     title: "A Day in the Life: Minimalist Living",
     category: "Lifestyle",
     duration: "11:10",
-    image: "bg-emerald-900",
-    gradient: "from-emerald-500/80 to-teal-900/80"
+    image: "https://images.unsplash.com/photo-1449247666642-264389f5f5b1?w=1600&q=80",
+    gradient: "from-emerald-500/60 to-teal-900/80"
   }
 ];
 
@@ -61,15 +62,22 @@ export default function HeroSlider() {
   }, [emblaApi, onSelect]);
 
   return (
-    <div className="relative group w-full rounded-3xl overflow-hidden shadow-2xl mb-8">
+    <div className="relative group w-full rounded-3xl overflow-hidden shadow-2xl mb-8 bg-zinc-900">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {featuredVlogs.map((slide) => (
             <div key={slide.id} className="relative flex-[0_0_100%] min-w-0">
-              <div className={`w-full aspect-[16/9] md:aspect-[21/9] ${slide.image} relative flex items-center`}>
-                <div className={`absolute inset-0 bg-gradient-to-r ${slide.gradient}`} />
-                <div className="absolute inset-0 bg-black/30 md:bg-black/10" />
-                
+              <div className="w-full aspect-[16/9] md:aspect-[21/9] relative flex items-center">
+                <Image 
+                  src={slide.image} 
+                  alt={slide.title} 
+                  fill 
+                  priority
+                  className="object-cover" 
+                />
+                <div className={`absolute inset-0 bg-gradient-to-r ${slide.gradient} pointer-events-none`} />
+                <div className="absolute inset-0 bg-black/30 md:bg-black/10 pointer-events-none" />
+
                 {/* Content */}
                 <div className="relative z-10 px-6 md:px-16 w-full md:w-2/3">
                   <Badge className="mb-4" variant="secondary">{slide.category}</Badge>

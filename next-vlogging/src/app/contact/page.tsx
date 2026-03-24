@@ -1,71 +1,52 @@
-"use client";
+import ContactForm from "@/components/ContactForm";
+import FAQAccordion from "@/components/FAQAccordion";
+import SocialLinks from "@/components/SocialLinks";
 
 export default function ContactPage() {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert("Thanks for your message! I'll reply soon. 🚀");
-  };
-
   return (
-    <div className="max-w-3xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-lg mt-8">
-      <h1 className="text-4xl font-bold mb-4">Get In Touch 📩</h1>
-      <p className="text-lg text-gray-600 mb-8">
-        Love my content? Have a collaboration idea? Send me a message!
-      </p>
+    <div className="max-w-6xl mx-auto px-4 py-12">
+      <div className="text-center mb-16">
+        <h1 className="text-5xl font-extrabold mb-6 tracking-tight text-gray-900 dark:text-white">
+          Let's Connect
+        </h1>
+        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-balance">
+          Whether you want to sponsor a video, collaborate on a project, or just say hi, I'd love to hear from you.
+        </p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
-          <input
-            type="text"
-            id="name"
-            placeholder="John Doe"
-            required
-            className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-          />
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-8 items-start mb-24">
+        {/* Left Col: Contact Form (Takes 3 columns) */}
+        <div className="lg:col-span-3 bg-white dark:bg-zinc-900 p-8 md:p-10 rounded-[2rem] shadow-sm border border-gray-100 dark:border-zinc-800">
+          <h2 className="text-2xl font-bold mb-8 text-gray-900 dark:text-white">Send a Message</h2>
+          <ContactForm />
         </div>
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
-          <input
-            type="email"
-            id="email"
-            placeholder="john@example.com"
-            required
-            className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-          />
-        </div>
-        <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Your Message</label>
-          <textarea
-            id="message"
-            rows={5}
-            placeholder="Brand deals, collabs, feedback..."
-            required
-            className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-y"
-          ></textarea>
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-colors shadow-md text-lg"
-        >
-          Send Message
-        </button>
-      </form>
 
-      <div className="mt-12 bg-indigo-50 p-8 rounded-2xl border border-indigo-100">
-        <h2 className="text-2xl font-bold mb-4 text-indigo-900">Business Inquiries</h2>
-        <div className="space-y-3 text-lg text-indigo-800">
-          <p><strong>Email:</strong> alex@vloghub.com</p>
-          <p><strong>Social:</strong> @alexvloghub (Instagram, Twitter)</p>
-          <p className="mt-4 text-indigo-600 italic">
-            Perfect for brand sponsorships, affiliate partnerships & experiments!
-          </p>
+        {/* Right Col: Info & Socials (Takes 2 columns) */}
+        <div className="lg:col-span-2 space-y-12">
+          <div>
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Other ways to reach me</h2>
+            <SocialLinks />
+          </div>
+
+          <div className="bg-indigo-50 dark:bg-indigo-950/30 p-8 rounded-3xl border border-indigo-100 dark:border-indigo-900/50 relative overflow-hidden">
+            <div className="absolute -right-6 -top-6 text-indigo-500/10 dark:text-indigo-500/20">
+              <svg width="120" height="120" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </div>
+            <h3 className="text-xl font-bold mb-4 text-indigo-900 dark:text-indigo-300 relative z-10">Business Inquiries Only</h3>
+            <div className="space-y-3 text-lg text-indigo-800 dark:text-indigo-400 relative z-10">
+              <p><strong>Email:</strong> <a href="mailto:alex@vloghub.com" className="hover:underline">alex@vloghub.com</a></p>
+              <p className="mt-4 text-sm bg-white/50 dark:bg-black/20 p-4 rounded-xl border border-indigo-200 dark:border-indigo-800">
+                Please note: For fan mail and channel feedback, use the contact form or hit me up on X/Twitter! ??
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <p className="text-center mt-8 text-gray-500 font-medium">
-        I'll get back to you within 48 hours! 🚀
-      </p>
+      {/* FAQ Section */}
+      <div className="max-w-3xl mx-auto">
+        <FAQAccordion />
+      </div>
     </div>
   );
 }

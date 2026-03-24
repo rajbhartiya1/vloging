@@ -99,7 +99,10 @@ export default function CartDrawer() {
                     ${cartTotal().toFixed(2)}
                   </span>
                 </div>
-                <Button className="w-full py-6 text-lg rounded-xl shadow-lg hover:shadow-indigo-500/25">
+                <Button 
+                  className="w-full py-6 text-lg rounded-xl shadow-lg hover:shadow-indigo-500/25"
+                  onClick={() => alert('Redirecting to Stripe/Shopify checkout...')}
+                >
                   Checkout Now
                 </Button>
               </div>
