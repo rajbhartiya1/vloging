@@ -15,7 +15,7 @@ export default function CreatorBadge() {
 
       <div className="flex-1">
         <div className="flex items-center gap-2 mb-1">
-          <h3 className="font-extrabold text-gray-900 dark:text-gray-100 text-lg md:text-xl leading-tight">VlogHub Creator</h3>
+          <h3 className="font-extrabold text-gray-900 dark:text-gray-100 text-lg md:text-xl leading-tight">Raj Creator</h3>
           <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
         </div>
         <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mb-1 line-clamp-1">Cinematic vlogger sharing epic adventures & tech setups.</p>

@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function WatchLaterPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -11,7 +13,7 @@ export default function WatchLaterPage() {
         </div>
         <h2 className="text-xl font-semibold mb-2">No videos saved yet</h2>
         <p className="text-muted-foreground mb-6">Videos you add to Watch Later will appear here.</p>
-        <button className="bg-primary text-primary-foreground px-6 py-2 rounded-full font-medium hover:bg-primary/90 transition-colors">Explore Videos</button>
+        <Link href="/category/lifestyle" className="bg-primary text-primary-foreground px-6 py-2 rounded-full font-medium hover:bg-primary/90 transition-colors">Explore Videos</Link>
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ export default function LivePage() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg leading-tight text-foreground">VlogHub Creator</h3>
+                  <h3 className="font-bold text-lg leading-tight text-foreground">Raj Creator</h3>
                   <p className="text-sm text-muted-foreground">1.2M Subscribers</p>
                 </div>
                 <button className="ml-4 bg-foreground text-background px-4 py-1.5 rounded-full font-semibold text-sm hover:opacity-90 transition">

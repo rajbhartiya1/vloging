@@ -92,8 +92,10 @@ export default function HeroSlider() {
                            <Play fill="black" size={24} /> Watch Now
                         </Button>
                       </Link>
-                      <Button variant="ghost" className="bg-white/10 hover:bg-white/20 text-white rounded-full font-bold px-6 py-6 sm:py-7 backdrop-blur-md shadow-lg transition-all flex gap-2 border border-white/10">
-                         <Info size={24} /> Details
+                      <Button asChild variant="ghost" className="bg-white/10 hover:bg-white/20 text-white rounded-full font-bold px-6 py-6 sm:py-7 backdrop-blur-md shadow-lg transition-all flex gap-2 border border-white/10">
+                        <Link href={`/video/${slide.id}`}>
+                          <Info size={24} /> Details
+                        </Link>
                       </Button>
                     </div>
                   </motion.div>

@@ -42,7 +42,7 @@ export default function PlaylistSidebar() {
               <h4 className={`text-sm font-semibold line-clamp-2 leading-snug ${ep.active ? 'text-primary' : 'text-foreground'}`}>
                 {ep.title}
               </h4>
-              <p className="text-xs text-muted-foreground line-clamp-1">VlogHub Creator</p>
+              <p className="text-xs text-muted-foreground line-clamp-1">Raj Creator</p>
             </div>
           </Link>
         ))}

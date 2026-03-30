@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function LikedVideosPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -11,7 +13,7 @@ export default function LikedVideosPage() {
         </div>
         <h2 className="text-xl font-semibold mb-2">Videos you liked will show up here</h2>
         <p className="text-muted-foreground mb-6">Like a video to save it to this list.</p>
-        <button className="bg-primary text-primary-foreground px-6 py-2 rounded-full font-medium hover:bg-primary/90 transition-colors">Start Watching</button>
+        <Link href="/" className="bg-primary text-primary-foreground px-6 py-2 rounded-full font-medium hover:bg-primary/90 transition-colors">Start Watching</Link>
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ export default function CategoryContent({ initialVideos, categoryName }: Categor
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const sortedVideos = useMemo(() => {
-    let sorted = [...initialVideos];
+    const sorted = [...initialVideos];
     switch (sortBy) {
       case "popular":
         sorted.sort((a, b) => b.views - a.views);

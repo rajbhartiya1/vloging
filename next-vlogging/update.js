@@ -1,5 +1,5 @@
 const fs = require('fs');
-const content = "use client";
+const content = `"use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { type Video } from "@/lib/data";
@@ -81,7 +81,7 @@ export default function VideoCard({ video, layout = "grid" }: { video: Video, la
               <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20 z-20 overflow-hidden">
                 <div
                   className="h-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]"
-                  style={{ width: \\%\ }}
+                  style={{ width: \`\${progress}%\` }}
                 />
               </div>
             )}
@@ -94,7 +94,7 @@ export default function VideoCard({ video, layout = "grid" }: { video: Video, la
               />
             )}
 
-            <div className={\bsolute inset-0 bg-black/10 dark:bg-black/30 flex items-center justify-center transition-all duration-300 z-10 \\}>
+            <div className="absolute inset-0 bg-black/10 dark:bg-black/30 flex items-center justify-center transition-all duration-300 z-10">
                <div className={cn("bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl text-white transform transition-transform", isRow ? "w-10 h-10 group-hover:scale-110" : "w-16 h-16 group-hover:scale-110")}>
                 <Play size={isRow ? 18 : 28} className="fill-white translate-x-0.5 drop-shadow-md" />
               </div>
@@ -142,4 +142,5 @@ export default function VideoCard({ video, layout = "grid" }: { video: Video, la
     </Link>
   );
 };
+\`;
 fs.writeFileSync('src/components/VideoCard.tsx', content);

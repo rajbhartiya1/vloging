@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, User, PlusCircle } from "lucide-react";
+import { Home, Compass, User, Hash } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function MobileBottomNav() {
@@ -10,8 +10,8 @@ export default function MobileBottomNav() {
 
   const navItems = [
     { name: "Home", href: "/", icon: Home },
-    { name: "Shorts", href: "/shorts", icon: Compass }, // We can map shorts here
-    { name: "Create", href: "/create", icon: PlusCircle, special: true },
+    { name: "Shorts", href: "/shorts", icon: Compass },
+    { name: "Community", href: "/community", icon: Hash, special: true },
     { name: "Profile", href: "/profile", icon: User },
   ];
 
