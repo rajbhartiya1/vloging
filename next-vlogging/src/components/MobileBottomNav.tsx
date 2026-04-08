@@ -11,7 +11,7 @@ export default function MobileBottomNav() {
   const navItems = [
     { name: "Home", href: "/", icon: Home },
     { name: "Shorts", href: "/shorts", icon: Compass },
-    { name: "Community", href: "/community", icon: Hash, special: true },
+    // { name: "Community", href: "/community", icon: Hash, special: true },
     { name: "Profile", href: "/profile", icon: User },
   ];
 

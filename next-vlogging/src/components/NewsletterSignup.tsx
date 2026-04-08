@@ -32,6 +32,7 @@ export default function NewsletterSignup() {
 
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
           <input
+            suppressHydrationWarning
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -41,6 +42,7 @@ export default function NewsletterSignup() {
             required
           />
           <button
+            suppressHydrationWarning
             type="submit"
             disabled={status !== "idle"}
             className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-70"

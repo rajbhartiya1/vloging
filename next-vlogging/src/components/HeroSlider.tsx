@@ -110,6 +110,7 @@ export default function HeroSlider() {
       <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-20">
         {featuredVlogs.map((_, idx) => (
           <button
+            suppressHydrationWarning
             key={idx}
             onClick={() => emblaApi?.scrollTo(idx)}
             className={`transition-all duration-500 rounded-full ${

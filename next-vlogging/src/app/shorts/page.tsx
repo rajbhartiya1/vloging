@@ -1,10 +1,26 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { videos } from "@/lib/data";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Heart, MessageCircle, Share2, MoreVertical, Music } from "lucide-react";
 import { useUserDataStore } from "@/store/userDataStore";
 import { cn } from "@/lib/utils";
+
+type ShortVideo = {
+  id: string;
+  title: string;
+  ytId: string;
+  views: number;
+  desc: string;
+  author?: string;
+};
+
+type ShortsApiResponse = {
+  data: ShortVideo[];
+  pageInfo: {
+    nextCursor: string | null;
+    hasMore: boolean;
+  };
+};
 
 function MusicTicker({ track }: { track: string }) {
   return (
@@ -67,7 +83,7 @@ function FloatingActionColumn({ videoId, initialLikes }: { videoId: string, init
   );
 }
 
-function ShortVideoPlayer({ video, isActive }: { video: any, isActive: boolean }) {
+function ShortVideoPlayer({ video, isActive }: { video: ShortVideo; isActive: boolean }) {
   return (
     <div className="relative w-full h-full bg-zinc-900 overflow-hidden flex items-center justify-center">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 to-indigo-900/40 z-0" />
@@ -108,8 +124,53 @@ function ShortVideoPlayer({ video, isActive }: { video: any, isActive: boolean }
 
 export default function ShortsFeed() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [shortsData, setShortsData] = useState<ShortVideo[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const shortsData = videos.slice(0, 5); 
+  const isLoadingRef = useRef(false);
+
+  const fetchShorts = useCallback(async (cursor: string | null, replace: boolean) => {
+    if (isLoadingRef.current) {
+      return;
+    }
+
+    isLoadingRef.current = true;
+    setIsLoading(true);
+    setErrorMessage(null);
+
+    try {
+      const params = new URLSearchParams({
+        limit: "5",
+        sort: "trending",
+      });
+      if (cursor) {
+        params.set("cursor", cursor);
+      }
+
+      const response = await fetch(`/api/shorts?${params.toString()}`, {
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to load shorts feed");
+      }
+
+      const payload = (await response.json()) as ShortsApiResponse;
+      setShortsData((current) => (replace ? payload.data : [...current, ...payload.data]));
+      setNextCursor(payload.pageInfo.nextCursor);
+      setHasMore(payload.pageInfo.hasMore);
+    } catch {
+      setErrorMessage("Unable to load shorts right now. Please try again.");
+    } finally {
+      isLoadingRef.current = false;
+      setIsLoading(false);
+      setIsInitialLoading(false);
+    }
+  }, []);
   
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -117,6 +178,10 @@ export default function ShortsFeed() {
       document.body.style.overflow = "unset";
     };
   }, []);
+
+  useEffect(() => {
+    void fetchShorts(null, true);
+  }, [fetchShorts]);
 
   const handleScroll = () => {
     if (!containerRef.current) return;
@@ -126,7 +191,20 @@ export default function ShortsFeed() {
     if (index !== activeIndex) {
       setActiveIndex(index);
     }
+
+    const distanceToBottom = containerRef.current.scrollHeight - (scrollPosition + clientHeight);
+    if (distanceToBottom < clientHeight * 1.5 && hasMore && !isLoading) {
+      void fetchShorts(nextCursor, false);
+    }
   };
+
+  if (isInitialLoading) {
+    return (
+      <div className="fixed inset-0 top-[64px] pb-[72px] md:pb-0 md:top-[72px] z-50 bg-black flex items-center justify-center">
+        <p className="text-white/80 text-sm">Loading shorts feed...</p>
+      </div>
+    );
+  }
 
   return (
     <div 
@@ -143,6 +221,18 @@ export default function ShortsFeed() {
              <ShortVideoPlayer video={video} isActive={activeIndex === index} />
           </div>
         ))}
+
+        {errorMessage && (
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-4 bg-red-500/90 text-white text-xs px-3 py-2 rounded-md">
+            {errorMessage}
+          </div>
+        )}
+
+        {!hasMore && shortsData.length > 0 && (
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-4 bg-white/10 text-white text-xs px-3 py-2 rounded-md">
+            End of shorts feed
+          </div>
+        )}
       </div>
     </div>
   );

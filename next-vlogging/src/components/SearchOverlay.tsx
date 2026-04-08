@@ -116,9 +116,9 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                     <Link href="/shop" onClick={onClose} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-800/50 text-gray-700 dark:text-gray-300 font-medium">
                        <ShoppingBag size={18} className="text-indigo-500" /> Creator Store
                     </Link>
-                    <Link href="/community" onClick={onClose} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-800/50 text-gray-700 dark:text-gray-300 font-medium">
+                    {/* <Link href="/community" onClick={onClose} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-800/50 text-gray-700 dark:text-gray-300 font-medium">
                        <Hash size={18} className="text-indigo-500" /> Community
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
               )}
