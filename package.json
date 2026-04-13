@@ -1,5 +1,13 @@
 {
+  "name": "vlogging-website",
+  "version": "1.0.0",
   "devDependencies": {
-    "shadcn": "^4.1.0"
+    "shadcn": "^4.1.0",
+    "concurrently": "^8.2.2"
+  },
+  "scripts": {
+    "dev:frontend": "cd next-vlogging && npm run dev",
+    "dev:backend": "cd django-backend && .\\venv\\Scripts\\activate && python manage.py runserver",
+    "dev": "npx concurrently \"npm run dev:frontend\" \"npm run dev:backend\""
   }
 }

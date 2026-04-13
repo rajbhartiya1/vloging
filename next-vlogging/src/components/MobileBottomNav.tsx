@@ -8,7 +8,14 @@ import { cn } from "@/lib/utils";
 export default function MobileBottomNav() {
   const pathname = usePathname();
 
-  const navItems = [
+  type NavItem = {
+    name: string;
+    href: string;
+    icon: typeof Home;
+    special?: boolean;
+  };
+
+  const navItems: NavItem[] = [
     { name: "Home", href: "/", icon: Home },
     { name: "Shorts", href: "/shorts", icon: Compass },
     // { name: "Community", href: "/community", icon: Hash, special: true },
