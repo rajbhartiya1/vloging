@@ -37,9 +37,10 @@ export default function Navbar() {
     { href: "/", label: "Home" },
     { href: "/shorts", label: "Shorts" },
     { href: "/live", label: "Live" },
-    // { href: "/community", label: "Community" },
     { href: "/shop", label: "Shop" },
     { href: "/library", label: "Library" },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
   ];
 
   return (
@@ -60,15 +61,13 @@ export default function Navbar() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className={`px-4 py-2 rounded-full transition-colors text-sm font-semibold ${isActive ? "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300" : "hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200"}`}
+                    className={`px-4 py-2 flex items-center justify-center rounded-full transition-all text-sm font-bold shadow-sm ${isActive ? "bg-indigo-600 dark:bg-indigo-500 text-white shadow-indigo-200 dark:shadow-none hover:bg-indigo-700" : "bg-white/50 dark:bg-white/5 hover:bg-indigo-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200 hover:-translate-y-0.5"}`}
                   >
                     {item.label}
                   </Link>
                 </li>
               );
             })}
-            <li><Link href="/about" className="px-4 py-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200 transition-colors text-sm font-semibold hidden lg:block">About</Link></li>
-            <li><Link href="/contact" className="px-4 py-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200 transition-colors text-sm font-semibold hidden lg:block">Contact</Link></li>
             
             <li className="h-6 w-px bg-gray-300 dark:bg-gray-700 mx-2 hidden lg:block"></li>
 
@@ -157,21 +156,28 @@ export default function Navbar() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden fixed inset-x-0 top-[72px] z-40 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-lg border-b border-gray-200 dark:border-zinc-800 shadow-xl"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden fixed inset-x-0 top-[72px] z-40 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl border-b border-gray-200 dark:border-zinc-800 shadow-2xl overflow-hidden"
           >
-            <ul className="flex flex-col p-4 gap-4 font-medium">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} onClick={() => setIsMobileMenuOpen(false)} className="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900">{item.label}</Link>
-                </li>
+            <ul className="flex flex-col p-4 gap-2 font-bold">
+              {navItems.map((item, index) => (
+                <motion.li 
+                  key={item.href}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <Link 
+                    href={item.href} 
+                    onClick={() => setIsMobileMenuOpen(false)} 
+                    className={`block p-4 rounded-xl transition-all ${pathname === item.href ? "bg-indigo-600 text-white" : "hover:bg-gray-100 dark:hover:bg-zinc-900 text-gray-800 dark:text-gray-200"}`}
+                  >
+                    {item.label}
+                  </Link>
+                </motion.li>
               ))}
-              <li><Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900">About</Link></li>
-              <li><Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900">Contact</Link></li>
-              <li><Link href="/terms-of-service" onClick={() => setIsMobileMenuOpen(false)} className="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900">Terms of Service</Link></li>
-              <li><Link href="/privacy-policy" onClick={() => setIsMobileMenuOpen(false)} className="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900">Privacy Policy</Link></li>
               
               <li className="h-px bg-gray-200 dark:bg-zinc-800 my-2"></li>
               

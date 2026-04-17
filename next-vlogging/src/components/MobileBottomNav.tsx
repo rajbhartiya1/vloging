@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, User, Hash } from "lucide-react";
+import { Home, Compass, User, Play, Library, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function MobileBottomNav() {
@@ -18,8 +18,9 @@ export default function MobileBottomNav() {
   const navItems: NavItem[] = [
     { name: "Home", href: "/", icon: Home },
     { name: "Shorts", href: "/shorts", icon: Compass },
-    // { name: "Community", href: "/community", icon: Hash, special: true },
-    { name: "Profile", href: "/profile", icon: User },
+    { name: "Live", href: "/live", icon: Play, special: true },
+    { name: "Shop", href: "/shop", icon: ShoppingBag },
+    { name: "Library", href: "/library", icon: Library },
   ];
 
   return (

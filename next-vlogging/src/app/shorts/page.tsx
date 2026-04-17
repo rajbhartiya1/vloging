@@ -101,8 +101,12 @@ function ShortVideoPlayer({ video, isActive }: { video: ShortVideo; isActive: bo
 
       <div className="absolute bottom-6 left-4 right-20 z-20 space-y-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-indigo-500 border-2 border-white flex items-center justify-center text-white font-bold shadow-md">
-            V
+          <div className="w-10 h-10 rounded-full bg-white border-2 border-white flex items-center justify-center text-white font-bold shadow-md overflow-hidden relative">
+            <img
+              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(video.title)}`}
+              alt={`${video.title}`}
+              className="object-cover w-full h-full"
+            />
           </div>
           <div>
             <h3 className="text-white font-bold text-sm shadow-black drop-shadow-md">@VlogHub</h3>
