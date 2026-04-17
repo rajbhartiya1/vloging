@@ -36,7 +36,7 @@ export default function ParallaxHero() {
             Creator Story
           </span>
           <h1 className="text-5xl md:text-7xl font-extrabold mb-4 tracking-tighter drop-shadow-md">
-            I'm Alex.
+            I'm Raj.
           </h1>
           <p className="text-xl md:text-2xl text-gray-200 font-medium max-w-2xl text-balance drop-shadow-sm">
             Documenting the world, exploring tech, and living life to the fullest. Welcome to my creative universe.

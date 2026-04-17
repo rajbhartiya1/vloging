@@ -15,7 +15,7 @@ export type Video = {
 export const videos: Video[] = [
   {
     id: '1',
-    title: 'Delhi Street Food Vlog - Must Try Foods!',
+    title: 'Aesthetic Coffee Shop Vlog',
     ytId: 'dQw4w9WgXcQ',
     category: 'Travel',
     views: 45000,
@@ -26,7 +26,7 @@ export const videos: Video[] = [
   },
   {
     id: '2',
-    title: 'Street Food Delhi Nightlife Tour',
+    title: 'Gaming Setup Tour 2024',
     ytId: 'kJQP7kiw5Fk',
     category: 'Travel',
     views: 32000,
@@ -37,7 +37,7 @@ export const videos: Video[] = [
   },
   {
     id: '3',
-    title: 'Latest iPhone 16 Review - Worth Buying?',
+    title: 'Cozy Winter Reading Vlog',
     ytId: 'pQR8mH2nK1s',
     category: 'Tech',
     views: 28000,
@@ -48,7 +48,7 @@ export const videos: Video[] = [
   },
   {
     id: '4',
-    title: 'Laptop Buying Guide 2024 - Budget to Premium',
+    title: 'Urban City Walk - Night Photography',
     ytId: 'mYfPx8Kq2Lw',
     category: 'Tech',
     views: 21000,
