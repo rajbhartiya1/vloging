@@ -4,9 +4,9 @@ import { Video, Camera, MessageSquare, MonitorPlay } from "lucide-react";
 export default function SocialLinks() {
   const socials = [
     { name: "YouTube", handle: "@VlogHub", icon: <Video size={24} />, color: "text-red-500", bg: "bg-red-50 dark:bg-red-500/10", border: "hover:border-red-500" },
-    { name: "Instagram", handle: "@alexvloghub", icon: <Camera size={24} />, color: "text-pink-500", bg: "bg-pink-50 dark:bg-pink-500/10", border: "hover:border-pink-500" },
-    { name: "Twitter / X", handle: "@alexvloghub", icon: <MessageSquare size={24} />, color: "text-blue-400", bg: "bg-blue-50 dark:bg-blue-400/10", border: "hover:border-blue-400" },
-    { name: "Twitch", handle: "alexstreams", icon: <MonitorPlay size={24} />, color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-500/10", border: "hover:border-purple-500" },
+    { name: "Instagram", handle: "@rajvloghub", icon: <Camera size={24} />, color: "text-pink-500", bg: "bg-pink-50 dark:bg-pink-500/10", border: "hover:border-pink-500" },
+    { name: "Twitter / X", handle: "@rajvloghub", icon: <MessageSquare size={24} />, color: "text-blue-400", bg: "bg-blue-50 dark:bg-blue-400/10", border: "hover:border-blue-400" },
+    { name: "Twitch", handle: "rajstreams", icon: <MonitorPlay size={24} />, color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-500/10", border: "hover:border-purple-500" },
   ];
 
   return (

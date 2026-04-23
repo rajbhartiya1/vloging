@@ -57,7 +57,8 @@ To achieve these goals, we will integrate the following front-end libraries:
   - Create a vertical snapping container (`scroll-snap-type: y mandatory`).
   - Overlay UI like TikTok/Instagram (right-side floating action buttons for Like, Share, Comment).
   - Use Intersection Observer to auto-play/pause videos as they snap into view.
-- [ ] **`/shop` - Creator Merch Store**
+- [ ] **`/shop` - Creator Merch Store (Deferred / Future Addition)**
+  - Currently temporarily disabled from navigation links.
   - A beautiful grid showcasing physical merchandise (t-shirts, mugs).
   - Implement a Slide-out Cart Drawer using `zustand`.
 - [ ] **`/blog` or `/community`**

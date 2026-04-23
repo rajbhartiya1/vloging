@@ -19,7 +19,6 @@ export default function MobileBottomNav() {
     { name: "Home", href: "/", icon: Home },
     { name: "Shorts", href: "/shorts", icon: Compass },
     { name: "Live", href: "/live", icon: Play, special: true },
-    { name: "Shop", href: "/shop", icon: ShoppingBag },
     { name: "Library", href: "/library", icon: Library },
   ];
 

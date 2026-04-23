@@ -22,7 +22,7 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
 
   // Note: Implementing minimal fake auth just for UI, replace with real auth later.
-  const [user, setUser] = useState<{ email: string, name: string } | null>({ email: "user@vloghub.com", name: "Alex Vlogger" });
+  const [user, setUser] = useState<{ email: string, name: string } | null>({ email: "user@vloghub.com", name: "Raj Vlogger" });
 
   useEffect(() => {
     setMounted(true);
@@ -37,7 +37,6 @@ export default function Navbar() {
     { href: "/", label: "Home" },
     { href: "/shorts", label: "Shorts" },
     { href: "/live", label: "Live" },
-    { href: "/shop", label: "Shop" },
     { href: "/library", label: "Library" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },

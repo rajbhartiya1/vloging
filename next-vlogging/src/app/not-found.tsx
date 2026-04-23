@@ -17,7 +17,7 @@ export default function NotFound() {
       
       <h2 className="text-3xl font-bold mb-4">Video Not Found (Or Lost in Cyberspace)</h2>
       <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-lg mx-auto text-lg">
-        The page or vlog you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+        The page or vlog you are looking for might have been removed, had its name changed, or is temporarily unavailable. If you clicked a link to get here, it might be outdated or broken.
       </p>
 
       {/* Return Home Button */}

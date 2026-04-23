@@ -34,7 +34,7 @@ export default function ContactPage() {
             </div>
             <h3 className="text-xl font-bold mb-4 text-indigo-900 dark:text-indigo-300 relative z-10">Business Inquiries Only</h3>
             <div className="space-y-3 text-lg text-indigo-800 dark:text-indigo-400 relative z-10">
-              <p><strong>Email:</strong> <a href="mailto:alex@vloghub.com" className="hover:underline">alex@vloghub.com</a></p>
+              <p><strong>Email:</strong> <a href="mailto:raj@vloghub.com" className="hover:underline">raj@vloghub.com</a></p>
               <p className="mt-4 text-sm bg-white/50 dark:bg-black/20 p-4 rounded-xl border border-indigo-200 dark:border-indigo-800">
                 Please note: For fan mail and channel feedback, use the contact form or hit me up on X/Twitter! ??
               </p>

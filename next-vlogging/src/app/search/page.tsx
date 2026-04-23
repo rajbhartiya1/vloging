@@ -48,7 +48,7 @@ export default function SearchPage() {
                 </div>
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-6 h-6 rounded-full bg-muted"></div>
-                  <span className="text-sm font-medium">Alex Johnson</span>
+                  <span className="text-sm font-medium">Raj Johnson</span>
                 </div>
                 <p className="text-sm text-muted-foreground line-clamp-2">This is the ultimate dream desk setup for maximum productivity and aesthetic appeal. Featuring the latest tech and gadgets...</p>
               </div>

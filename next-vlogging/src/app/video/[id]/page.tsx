@@ -6,6 +6,7 @@ import VideoPlayer from "@/components/VideoPlayer";
 import ActionRibbon from "@/components/ActionRibbon";
 import DescriptionBox from "@/components/DescriptionBox";
 import CreatorBadge from "@/components/CreatorBadge";
+import EquipmentGearList from "@/components/EquipmentGearList";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -101,6 +102,12 @@ export default async function VideoPage({
               <p className="text-sm text-gray-500 dark:text-gray-400">Description, context, and tags</p>
             </div>
             <DescriptionBox description={video.desc} tags={video.tags} />
+
+            <div className="mt-8">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">Gear Used in This Video</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">A quick list of the gear used to shoot and produce this content.</p>
+              <EquipmentGearList />
+            </div>
           </div>
         </div>
 

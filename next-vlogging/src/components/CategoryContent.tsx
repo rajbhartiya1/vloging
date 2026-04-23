@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import VideoCard from "@/components/VideoCard";
 import { type Video } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
@@ -81,7 +82,16 @@ export default function CategoryContent({ initialVideos, categoryName }: Categor
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8">
         {displayedVideos.length > 0 ? (
-          displayedVideos.map((video) => <VideoCard key={video.id} video={video} />)
+          displayedVideos.map((video, index) => (
+            <motion.div
+              key={video.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: (Math.floor(index / 3) * 0.1) + ((index % 3) * 0.05) }}
+            >
+              <VideoCard video={video} />
+            </motion.div>
+          ))
         ) : (
           <div className="col-span-full py-24 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
             <svg className="w-16 h-16 mb-4 text-gray-300 dark:text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">

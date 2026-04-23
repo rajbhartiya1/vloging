@@ -1,7 +1,7 @@
 import React from 'react';
 
 const mockSuperChats = [
-  { id: 1, user: 'Alex C.', amount: '$50.00', color: 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border-yellow-500/30' },
+  { id: 1, user: 'Raj C.', amount: '$50.00', color: 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border-yellow-500/30' },
   { id: 2, user: 'Sarah W.', amount: '$5.00', color: 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30' },
   { id: 3, user: 'Jane D.', amount: '$10.00', color: 'bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30' },
 ];

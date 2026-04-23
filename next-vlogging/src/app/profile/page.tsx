@@ -10,7 +10,7 @@ export default function ProfilePage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <p className="text-xs tracking-wide uppercase text-indigo-600 dark:text-indigo-400 font-semibold">Creator Profile</p>
-            <h1 className="text-3xl font-black tracking-tight mt-1">Alex Vlogger</h1>
+            <h1 className="text-3xl font-black tracking-tight mt-1">Raj Vlogger</h1>
             <p className="text-sm text-muted-foreground mt-1">user@vloghub.com</p>
           </div>
           <Button asChild className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-md">
@@ -34,8 +34,8 @@ export default function ProfilePage() {
                 </Link>
               </Button>
             </div>
-            <h2 className="text-2xl font-bold tracking-tight">Alex Vlogger</h2>
-            <p className="text-muted-foreground text-sm">@alex_vlogger</p>
+            <h2 className="text-2xl font-bold tracking-tight">Raj Vlogger</h2>
+            <p className="text-muted-foreground text-sm">@raj_vlogger</p>
             <p className="text-muted-foreground text-xs mb-4">user@vloghub.com</p>
             <Button asChild variant="outline" className="w-full rounded-full"><Link href="/contact">Edit Profile</Link></Button>
           </div>

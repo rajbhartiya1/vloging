@@ -19,7 +19,7 @@ const MERCH_ITEMS = [
 
 const CATEGORIES = ["All", "Apparel", "Accessories", "Digital"];
 
-export default function ShopPage() {
+export function ShopSection() {
   const { addToCart, toggleCart, cart, isCartOpen } = useShopStore();
   const [filter, setFilter] = useState("All");
   const [selectedProduct, setSelectedProduct] = useState<typeof MERCH_ITEMS[0] | null>(null);
