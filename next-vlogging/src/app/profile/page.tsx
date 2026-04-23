@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Bell, Clock3, Heart, History, Library, LogOut, Sparkles } from 'lucide-react';
+import { Bell, Clock3, Heart, History, Library, LogOut, Sparkles, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function ProfilePage() {
@@ -60,6 +60,7 @@ export default function ProfilePage() {
             <Button asChild variant="ghost" className="justify-start w-full rounded-xl"><Link href="/library/history" className="inline-flex items-center gap-2"><History size={16} /> Watch History</Link></Button>
             <Button asChild variant="ghost" className="justify-start w-full rounded-xl"><Link href="/library/watch-later" className="inline-flex items-center gap-2"><Clock3 size={16} /> Watch Later</Link></Button>
             <Button asChild variant="ghost" className="justify-start w-full rounded-xl"><Link href="/library/liked" className="inline-flex items-center gap-2"><Heart size={16} /> Liked Videos</Link></Button>
+            <Button asChild variant="ghost" className="justify-start w-full rounded-xl"><Link href="/tracking" className="inline-flex items-center gap-2"><Activity size={16} /> Tracking Dashboard</Link></Button>
             <Button asChild variant="ghost" className="justify-start w-full rounded-xl text-destructive hover:bg-destructive/10 hover:text-destructive"><Link href="/login" className="inline-flex items-center gap-2"><LogOut size={16} /> Sign Out</Link></Button>
           </nav>
         </aside>

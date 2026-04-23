@@ -3,12 +3,13 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
-import { Moon, Sun, Menu, X, User, Search, Heart, Clock } from "lucide-react";
+import { Moon, Sun, Menu, X, User, Search, Heart, Clock, Activity } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchOverlay from "./SearchOverlay";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
+import { useUserDataStore } from "@/store/userDataStore";
 
 export default function Navbar() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -17,22 +18,45 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const pathname = usePathname();
+  const syncFromBackend = useUserDataStore((state) => state.syncFromBackend);
   
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   // Note: Implementing minimal fake auth just for UI, replace with real auth later.
-  const [user, setUser] = useState<{ email: string, name: string } | null>({ email: "user@vloghub.com", name: "Raj Vlogger" });
+  const [user, setUser] = useState<{ email: string, name: string } | null>(null);
 
   useEffect(() => {
     setMounted(true);
+    if (document.cookie.includes("vloghub_auth=true")) {
+      const rawUser = localStorage.getItem("vloghub_user");
+      if (rawUser) {
+        try {
+          const parsed = JSON.parse(rawUser) as { email?: string; name?: string };
+          setUser({
+            email: parsed.email || "user@vloghub.com",
+            name: parsed.name || "Raj Vlogger",
+          });
+        } catch {
+          setUser({ email: "user@vloghub.com", name: "Raj Vlogger" });
+        }
+      } else {
+        setUser({ email: "user@vloghub.com", name: "Raj Vlogger" });
+      }
+      void syncFromBackend();
+    }
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [syncFromBackend]);
 
   const toggleAuthModal = () => setIsAuthModalOpen(!isAuthModalOpen);
-  const handleLogout = () => setUser(null);
+  const handleLogout = () => {
+    document.cookie = "vloghub_auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    localStorage.removeItem("vloghub_user");
+    setUser(null);
+    window.location.href = "/login";
+  };
   const navItems = [
     { href: "/", label: "Home" },
     { href: "/shorts", label: "Shorts" },
@@ -88,11 +112,8 @@ export default function Navbar() {
               <li className="ml-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full px-0 hover:ring-2 hover:ring-indigo-500 transition-all">
-                      <Avatar className="h-10 w-10 border-2 border-white dark:border-zinc-900 shadow-sm">
-                        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} alt={user.name} />
-                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full px-0 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-all border border-gray-200 dark:border-zinc-800">
+                      <User size={20} className="text-gray-700 dark:text-gray-300" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-xl" align="end" forceMount>
@@ -108,6 +129,9 @@ export default function Navbar() {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/library/liked" className="cursor-pointer flex items-center"><Heart className="mr-2 h-4 w-4" /> Liked Vlogs</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/tracking" className="cursor-pointer flex items-center"><Activity className="mr-2 h-4 w-4" /> Tracking Dashboard</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/library/watch-later" className="cursor-pointer flex items-center"><Clock className="mr-2 h-4 w-4" /> Watch Later</Link>

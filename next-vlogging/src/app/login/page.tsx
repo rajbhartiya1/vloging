@@ -4,14 +4,30 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { loginUser } from "@/lib/authClient";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login", { email, password });
+    setError("");
+    setIsLoading(true);
+
+    const result = await loginUser({ email, password });
+    setIsLoading(false);
+
+    if (!result.ok || !result.user) {
+      setError(result.message);
+      return;
+    }
+
+    document.cookie = "vloghub_auth=true; path=/;";
+    localStorage.setItem("vloghub_user", JSON.stringify(result.user));
+    window.location.href = "/";
   };
 
   return (
@@ -28,17 +44,17 @@ export default function LoginPage() {
 
         {/* OAuth Buttons */}
         <div className="mt-8 flex flex-col gap-3">
-          <Button variant="outline" className="w-full flex justify-center items-center py-6 rounded-2xl gap-3 text-base">
+          <Button variant="outline" className="w-full flex justify-center items-center py-6 rounded-2xl gap-3 text-base" disabled>
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
             </svg>
-            Continue with Google
+            Continue with Google (Coming Soon)
           </Button>
-          <Button variant="outline" className="w-full flex justify-center items-center py-6 rounded-2xl gap-3 text-base">
+          <Button variant="outline" className="w-full flex justify-center items-center py-6 rounded-2xl gap-3 text-base" disabled>
             <svg className="w-5 h-5 dark:fill-white" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.04 2.26-.74 3.58-.79 2.08-.04 3.8.92 4.7 2.5-3.8 2.3-2.92 7.15.5 8.44-.92 2.25-2.2 4.54-3.86 6.02zm-3.66-14.71c.54-2.58-1.55-4.57-4.14-4.57-.42 2.61 2.22 4.67 4.14 4.57z"/>
             </svg>
-            Continue with Apple
+            Continue with Apple (Coming Soon)
           </Button>
         </div>
 
@@ -82,16 +98,22 @@ export default function LoginPage() {
             </div>
           </div>
 
+          {error ? (
+            <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 rounded-xl px-3 py-2">
+              {error}
+            </p>
+          ) : null}
+
           <div className="flex items-center justify-between">
             <div className="text-sm">
-              <a href="#" className="font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400">
+              <Link href="/forgot-password" className="font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400">
                 Forgot your password?
-              </a>
+              </Link>
             </div>
           </div>
 
-          <Button type="submit" className="w-full py-6 rounded-full text-lg font-bold shadow-md hover:shadow-lg transition-all">
-            Sign in
+          <Button type="submit" disabled={isLoading} className="w-full py-6 rounded-full text-lg font-bold shadow-md hover:shadow-lg transition-all">
+            {isLoading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
         

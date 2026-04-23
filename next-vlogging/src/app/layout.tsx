@@ -19,6 +19,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'VlogHub - Best Vlogs & Lifestyle Content',
   description: 'Discover trending vlogs in Travel, Tech, Lifestyle.',
+  openGraph: {
+    title: 'VlogHub - Best Vlogs & Lifestyle Content',
+    description: 'Discover trending vlogs in Travel, Tech, Lifestyle.',
+    siteName: 'VlogHub',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'VlogHub',
+    description: 'Discover trending vlogs in Travel, Tech, Lifestyle.',
+  },
 };
 
 const FOOTER_YEAR = 2026;

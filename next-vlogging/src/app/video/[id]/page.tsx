@@ -11,6 +11,63 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const video = getVideoById(id);
+
+  if (!video) {
+    return {
+      title: "Video Not Found",
+    };
+  }
+
+  return {
+    title: `${video.title} | VlogHub`,
+    description: video.desc,
+    openGraph: {
+      title: video.title,
+      description: video.desc,
+      type: "video.other",
+      url: `/video/${video.id}`,
+      images: [
+        {
+          url: `https://img.youtube.com/vi/${video.ytId}/maxresdefault.jpg`,
+          width: 1280,
+          height: 720,
+          alt: video.title,
+        },
+      ],
+      videos: [
+        {
+          url: `https://www.youtube.com/v/${video.ytId}`,
+          width: 1280,
+          height: 720,
+          type: "application/x-shockwave-flash",
+        }
+      ]
+    },
+    twitter: {
+      card: "player",
+      title: video.title,
+      description: video.desc,
+      images: [`https://img.youtube.com/vi/${video.ytId}/maxresdefault.jpg`],
+      players: [
+        {
+          playerUrl: `https://www.youtube.com/embed/${video.ytId}`,
+          streamUrl: `https://www.youtube.com/v/${video.ytId}`,
+          width: 1280,
+          height: 720,
+        }
+      ]
+    },
+  };
+}
 
 // Next.js 15 valid type signature for params
 export default async function VideoPage({
