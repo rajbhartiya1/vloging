@@ -60,6 +60,14 @@ export function loginUser(input: { email: string; password: string }) {
   return request("/api/auth/login/", input);
 }
 
+export function loginWithGoogle(input: { idToken: string }) {
+  return request("/api/auth/google/", input);
+}
+
+export function loginWithApple(input: { idToken: string; fullName?: string }) {
+  return request("/api/auth/apple/", input);
+}
+
 export function forgotPassword(input: { email: string }) {
   return request("/api/auth/forgot-password/", input);
 }

@@ -1,6 +1,7 @@
 import json
 import re
 import secrets
+import jwt
 
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -9,10 +10,13 @@ from django.utils import timezone
 from django.db import transaction
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from google.oauth2 import id_token as google_id_token
+from google.auth.transport import requests as google_requests
 
 from .models import TrackingEvent, UserVideoState, PasswordResetToken
 
 User = get_user_model()
+APPLE_JWKS_CLIENT = jwt.PyJWKClient("https://appleid.apple.com/auth/keys")
 
 def root_view(request):
     return JsonResponse({'message': 'Welcome to the Django API Root!', 'status': 'success'})
@@ -40,6 +44,86 @@ def _build_username_from_email(email):
         index += 1
         candidate = f"{base}_{index}"
     return candidate
+
+
+def _social_auth_response(user, created, provider):
+    return JsonResponse(
+        {
+            "status": "ok",
+            "message": "Account created successfully" if created else "Login successful",
+            "provider": provider,
+            "user": {
+                "id": user.id,
+                "name": user.first_name or user.username,
+                "email": user.email,
+            },
+        },
+        status=201 if created else 200,
+    )
+
+
+def _get_or_create_social_user(email, name):
+    user = User.objects.filter(email__iexact=email).first()
+    created = False
+
+    if user is None:
+        username = _build_username_from_email(email)
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            first_name=name,
+            password=None,
+        )
+        user.set_unusable_password()
+        user.save(update_fields=["password"])
+        created = True
+    elif name and not user.first_name:
+        user.first_name = name
+        user.save(update_fields=["first_name"])
+
+    return user, created
+
+
+def _verify_google_token(identity_token):
+    claims = google_id_token.verify_oauth2_token(identity_token, google_requests.Request(), None)
+    issuer = claims.get("iss")
+    if issuer not in {"accounts.google.com", "https://accounts.google.com"}:
+        raise ValueError("Invalid Google token issuer")
+
+    allowed_client_ids = {item for item in settings.GOOGLE_OAUTH_CLIENT_IDS if item}
+    audience = claims.get("aud")
+    if allowed_client_ids and audience not in allowed_client_ids:
+        raise ValueError("Google token audience mismatch")
+
+    if claims.get("email_verified") is not True:
+        raise ValueError("Google account email is not verified")
+
+    email = str(claims.get("email") or "").strip().lower()
+    if not email:
+        raise ValueError("Google account is missing an email address")
+
+    display_name = str(claims.get("name") or claims.get("given_name") or "").strip()
+    return email, display_name
+
+
+def _verify_apple_token(identity_token):
+    if not settings.APPLE_SERVICES_ID:
+        raise ValueError("Apple services ID is not configured")
+
+    signing_key = APPLE_JWKS_CLIENT.get_signing_key_from_jwt(identity_token)
+    claims = jwt.decode(
+        identity_token,
+        signing_key.key,
+        algorithms=["RS256"],
+        audience=settings.APPLE_SERVICES_ID,
+        issuer="https://appleid.apple.com",
+    )
+
+    email = str(claims.get("email") or "").strip().lower()
+    if not email:
+        raise ValueError("Apple account is missing an email address")
+
+    return email
 
 
 @csrf_exempt
@@ -138,6 +222,63 @@ def auth_login(request):
             },
         }
     )
+
+
+@csrf_exempt
+def auth_google(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    payload = _json_payload(request)
+    if payload is None:
+        return JsonResponse({"error": "Invalid JSON payload"}, status=400)
+
+    identity_token = str(payload.get("idToken") or "").strip()
+    if not identity_token:
+        return JsonResponse({"error": "idToken is required"}, status=400)
+
+    try:
+        email, display_name = _verify_google_token(identity_token)
+    except Exception:
+        return JsonResponse(
+            {
+                "error": "Invalid Google sign-in token",
+                "code": "invalid_google_token",
+            },
+            status=401,
+        )
+
+    user, created = _get_or_create_social_user(email, display_name)
+    return _social_auth_response(user, created, "google")
+
+
+@csrf_exempt
+def auth_apple(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    payload = _json_payload(request)
+    if payload is None:
+        return JsonResponse({"error": "Invalid JSON payload"}, status=400)
+
+    identity_token = str(payload.get("idToken") or "").strip()
+    full_name = str(payload.get("fullName") or "").strip()
+    if not identity_token:
+        return JsonResponse({"error": "idToken is required"}, status=400)
+
+    try:
+        email = _verify_apple_token(identity_token)
+    except Exception:
+        return JsonResponse(
+            {
+                "error": "Invalid Apple sign-in token",
+                "code": "invalid_apple_token",
+            },
+            status=401,
+        )
+
+    user, created = _get_or_create_social_user(email, full_name)
+    return _social_auth_response(user, created, "apple")
 
 
 @csrf_exempt

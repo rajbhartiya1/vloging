@@ -7,13 +7,13 @@ import HeroSlider from "@/components/HeroSlider";
 import CreatorBadge from "@/components/CreatorBadge";
 import CategoryPills from "@/components/CategoryPills";
 import NewsletterSignup from "@/components/NewsletterSignup";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 export default function Home() {
   const latestVideos = getLatestVideos(6);
   const trendingVideos = getTrendingVideos(6);
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -24,7 +24,7 @@ export default function Home() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 40, opacity: 0, scale: 0.85 },
     visible: { 
       y: 0, 
@@ -33,8 +33,7 @@ export default function Home() {
       transition: { 
         type: "spring",
         stiffness: 150,
-        damping: 12,
-        duration: 0.6 
+        damping: 12
       } 
     }
   };

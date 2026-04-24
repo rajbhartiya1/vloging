@@ -27,6 +27,8 @@ Required backend env values:
 - `CORS_ALLOWED_ORIGINS`: your frontend domain(s)
 - `CSRF_TRUSTED_ORIGINS`: your frontend domain(s)
 - `DATABASE_URL`: Postgres connection string for production
+- `GOOGLE_OAUTH_CLIENT_IDS`: comma-separated accepted Google OAuth web client IDs
+- `APPLE_SERVICES_ID`: Apple Service ID (web identifier)
 
 Example:
 - `ALLOWED_HOSTS=your-api.onrender.com`
@@ -44,6 +46,9 @@ After deploy, verify:
 3. Framework should auto-detect as Next.js.
 4. Add env variable:
    - `NEXT_PUBLIC_DJANGO_API_BASE=https://your-api.onrender.com`
+   - `NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-web-client-id.apps.googleusercontent.com`
+   - `NEXT_PUBLIC_APPLE_CLIENT_ID=com.yourdomain.vloghub.web`
+   - `NEXT_PUBLIC_APPLE_REDIRECT_URI=https://your-site.vercel.app/login`
 5. Deploy.
 
 After deploy, verify:

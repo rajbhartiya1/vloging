@@ -173,3 +173,7 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'no-reply@vloghub.local')
 # Password reset configuration
 PASSWORD_RESET_CODE_TTL_MINUTES = int(os.getenv('PASSWORD_RESET_CODE_TTL_MINUTES', '15'))
 PASSWORD_RESET_REQUEST_COOLDOWN_SECONDS = int(os.getenv('PASSWORD_RESET_REQUEST_COOLDOWN_SECONDS', '60'))
+
+# Social login configuration
+GOOGLE_OAUTH_CLIENT_IDS = env_list('GOOGLE_OAUTH_CLIENT_IDS')
+APPLE_SERVICES_ID = os.getenv('APPLE_SERVICES_ID', '').strip()

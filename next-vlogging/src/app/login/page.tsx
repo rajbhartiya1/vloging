@@ -1,16 +1,55 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { loginUser } from "@/lib/authClient";
+import { loginUser, loginWithApple, loginWithGoogle } from "@/lib/authClient";
+
+declare global {
+  interface Window {
+    google?: {
+      accounts?: {
+        id?: {
+          initialize: (options: {
+            client_id: string;
+            callback: (response: { credential?: string }) => void;
+          }) => void;
+          prompt: () => void;
+        };
+      };
+    };
+    AppleID?: {
+      auth?: {
+        init: (options: {
+          clientId: string;
+          scope: string;
+          redirectURI: string;
+          usePopup: boolean;
+        }) => void;
+        signIn: () => Promise<{ authorization?: { id_token?: string } }>;
+      };
+    };
+  }
+}
+
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
+const APPLE_CLIENT_ID = process.env.NEXT_PUBLIC_APPLE_CLIENT_ID || "";
+const APPLE_REDIRECT_URI = process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI || "";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isAppleLoading, setIsAppleLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const completeAuth = (user: { id: number; name: string; email: string }) => {
+    document.cookie = "vloghub_auth=true; path=/;";
+    localStorage.setItem("vloghub_user", JSON.stringify(user));
+    window.location.href = "/";
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,9 +64,107 @@ export default function LoginPage() {
       return;
     }
 
-    document.cookie = "vloghub_auth=true; path=/;";
-    localStorage.setItem("vloghub_user", JSON.stringify(result.user));
-    window.location.href = "/";
+    completeAuth(result.user);
+  };
+
+  useEffect(() => {
+    const googleScript = document.createElement("script");
+    googleScript.src = "https://accounts.google.com/gsi/client";
+    googleScript.async = true;
+    googleScript.defer = true;
+    document.body.appendChild(googleScript);
+
+    const appleScript = document.createElement("script");
+    appleScript.src = "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
+    appleScript.async = true;
+    appleScript.defer = true;
+    document.body.appendChild(appleScript);
+
+    return () => {
+      document.body.removeChild(googleScript);
+      document.body.removeChild(appleScript);
+    };
+  }, []);
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    if (!GOOGLE_CLIENT_ID) {
+      setError("Google sign-in is not configured. Add NEXT_PUBLIC_GOOGLE_CLIENT_ID.");
+      return;
+    }
+
+    if (!window.google?.accounts?.id) {
+      setError("Google sign-in SDK is still loading. Please try again.");
+      return;
+    }
+
+    setIsGoogleLoading(true);
+    window.google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: async ({ credential }) => {
+        if (!credential) {
+          setError("Google sign-in was cancelled.");
+          setIsGoogleLoading(false);
+          return;
+        }
+
+        const result = await loginWithGoogle({ idToken: credential });
+        setIsGoogleLoading(false);
+
+        if (!result.ok || !result.user) {
+          setError(result.message);
+          return;
+        }
+
+        completeAuth(result.user);
+      },
+    });
+    window.google.accounts.id.prompt();
+  };
+
+  const handleAppleSignIn = async () => {
+    setError("");
+    if (!APPLE_CLIENT_ID || !APPLE_REDIRECT_URI) {
+      setError("Apple sign-in is not configured. Add NEXT_PUBLIC_APPLE_CLIENT_ID and NEXT_PUBLIC_APPLE_REDIRECT_URI.");
+      return;
+    }
+
+    if (!window.AppleID?.auth) {
+      setError("Apple sign-in SDK is still loading. Please try again.");
+      return;
+    }
+
+    setIsAppleLoading(true);
+
+    try {
+      window.AppleID.auth.init({
+        clientId: APPLE_CLIENT_ID,
+        scope: "name email",
+        redirectURI: APPLE_REDIRECT_URI,
+        usePopup: true,
+      });
+
+      const response = await window.AppleID.auth.signIn();
+      const token = response.authorization?.id_token;
+      if (!token) {
+        setError("Apple sign-in did not return a valid token.");
+        setIsAppleLoading(false);
+        return;
+      }
+
+      const result = await loginWithApple({ idToken: token });
+      setIsAppleLoading(false);
+
+      if (!result.ok || !result.user) {
+        setError(result.message);
+        return;
+      }
+
+      completeAuth(result.user);
+    } catch {
+      setIsAppleLoading(false);
+      setError("Apple sign-in cancelled or failed.");
+    }
   };
 
   return (
@@ -44,17 +181,29 @@ export default function LoginPage() {
 
         {/* OAuth Buttons */}
         <div className="mt-8 flex flex-col gap-3">
-          <Button variant="outline" className="w-full flex justify-center items-center py-6 rounded-2xl gap-3 text-base" disabled>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full flex justify-center items-center py-6 rounded-2xl gap-3 text-base"
+            onClick={handleGoogleSignIn}
+            disabled={isGoogleLoading || isAppleLoading || isLoading}
+          >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
             </svg>
-            Continue with Google (Coming Soon)
+            {isGoogleLoading ? "Connecting Google..." : "Continue with Google"}
           </Button>
-          <Button variant="outline" className="w-full flex justify-center items-center py-6 rounded-2xl gap-3 text-base" disabled>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full flex justify-center items-center py-6 rounded-2xl gap-3 text-base"
+            onClick={handleAppleSignIn}
+            disabled={isGoogleLoading || isAppleLoading || isLoading}
+          >
             <svg className="w-5 h-5 dark:fill-white" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.04 2.26-.74 3.58-.79 2.08-.04 3.8.92 4.7 2.5-3.8 2.3-2.92 7.15.5 8.44-.92 2.25-2.2 4.54-3.86 6.02zm-3.66-14.71c.54-2.58-1.55-4.57-4.14-4.57-.42 2.61 2.22 4.67 4.14 4.57z"/>
             </svg>
-            Continue with Apple (Coming Soon)
+            {isAppleLoading ? "Connecting Apple..." : "Continue with Apple"}
           </Button>
         </div>
 
@@ -71,7 +220,7 @@ export default function LoginPage() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="sr-only">Email address</label>
+              <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Email address</label>
               <Input
                 id="email"
                 type="email"
@@ -84,7 +233,7 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">Password</label>
+              <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
               <Input
                 id="password"
                 type="password"
