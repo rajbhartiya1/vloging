@@ -134,14 +134,14 @@ def auth_google_config(request):
     if not client_ids:
         return JsonResponse(
             {
-                "error": "Google sign-in is not configured on backend.",
-                "code": "google_client_id_missing",
+                "configured": False,
+                "clientId": "",
+                "message": "Google sign-in is not configured on backend.",
             },
-            status=503,
         )
 
     # Google OAuth web client IDs are public identifiers and safe to expose.
-    return JsonResponse({"clientId": client_ids[0]})
+    return JsonResponse({"configured": True, "clientId": client_ids[0]})
 
 
 @csrf_exempt
