@@ -121,9 +121,9 @@ function ShortVideoPlayer({ video, isActive }: { video: ShortVideo; isActive: bo
     <div className="relative w-full h-full bg-zinc-900 overflow-hidden flex items-center justify-center">
       <div className={cn("absolute inset-0 bg-gradient-to-br z-0", theme.aura)} />
 
-      <div className="absolute top-4 left-4 z-20 flex items-center gap-2 rounded-full border border-white/20 bg-black/35 px-3 py-1.5 backdrop-blur-md">
+      <div className="absolute top-3 left-3 md:top-4 md:left-4 z-20 flex items-center gap-2 rounded-full border border-white/20 bg-black/35 px-2.5 md:px-3 py-1.5 backdrop-blur-md">
         <ScanLine size={14} className="text-white/90" />
-        <span className="text-[11px] font-semibold tracking-wide text-white/90">VLOG LENS MODE</span>
+        <span className="text-[10px] md:text-[11px] font-semibold tracking-wide text-white/90">VLOG LENS MODE</span>
       </div>
       
       <div className="relative z-10 w-full h-full max-w-lg mx-auto flex items-center justify-center bg-black">
@@ -138,7 +138,7 @@ function ShortVideoPlayer({ video, isActive }: { video: ShortVideo; isActive: bo
 
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80 z-10 pointer-events-none" />
 
-      <div className="absolute bottom-6 left-4 right-20 z-20 space-y-3">
+      <div className="absolute bottom-5 left-3 md:left-4 right-18 md:right-20 z-20 space-y-2.5 md:space-y-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-white border-2 border-white flex items-center justify-center text-white font-bold shadow-md overflow-hidden relative">
             <img
@@ -171,7 +171,7 @@ function ShortVideoPlayer({ video, isActive }: { video: ShortVideo; isActive: bo
           href={`https://www.youtube.com/shorts/${video.ytId}`}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center rounded-full bg-red-600/90 px-3 py-1 text-xs font-semibold text-white hover:bg-red-500 transition-colors w-fit"
+          className="inline-flex items-center rounded-full bg-red-600/90 px-3 py-1 text-[11px] md:text-xs font-semibold text-white hover:bg-red-500 transition-colors w-fit"
         >
           Open on YouTube Shorts
         </a>
@@ -394,7 +394,7 @@ export default function ShortsFeed() {
 
   if (isInitialLoading) {
     return (
-      <div className="fixed inset-0 top-[64px] pb-[72px] md:pb-0 md:top-[72px] z-50 bg-black flex items-center justify-center">
+      <div className="fixed inset-0 top-[64px] pb-[72px] md:pb-0 md:top-[72px] z-50 bg-black flex items-center justify-center" style={{ height: "calc(100dvh - 64px)" }}>
         <p className="text-white/80 text-sm">Loading shorts feed...</p>
       </div>
     );
@@ -403,7 +403,7 @@ export default function ShortsFeed() {
   return (
     <div 
       className="fixed inset-0 top-[64px] pb-[72px] md:pb-0 md:top-[72px] z-50 bg-black flex justify-center"
-      style={{ height: "calc(100vh - 64px)" }}
+      style={{ height: "calc(100dvh - 64px)" }}
     >
       <div 
         ref={containerRef}
@@ -413,7 +413,7 @@ export default function ShortsFeed() {
         onTouchEnd={handleTouchEnd}
         className="w-full h-full max-w-md bg-zinc-950 overflow-y-scroll snap-y snap-mandatory hide-scrollbar relative overscroll-none"
       >
-        <div className="pointer-events-none absolute left-2 top-1/2 z-30 -translate-y-1/2 flex flex-col gap-2">
+        <div className="pointer-events-none absolute left-2 top-1/2 z-30 -translate-y-1/2 hidden sm:flex flex-col gap-2">
           {shortsData.slice(0, 10).map((video, index) => (
             <button
               key={`${video.id}-progress`}
@@ -428,12 +428,12 @@ export default function ShortsFeed() {
           ))}
         </div>
 
-        <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
+        <div className="absolute top-3 right-3 md:top-4 md:right-4 z-30 flex items-center gap-2">
           <button
             type="button"
             onClick={() => setScanMode((value) => !value)}
             className={cn(
-              "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold backdrop-blur-md transition-colors",
+              "inline-flex items-center gap-1.5 rounded-full border px-2.5 md:px-3 py-1.5 text-[11px] md:text-xs font-semibold backdrop-blur-md transition-colors",
               scanMode ? "border-emerald-300/40 bg-emerald-500/20 text-emerald-100" : "border-white/25 bg-black/40 text-white"
             )}
           >
@@ -443,7 +443,7 @@ export default function ShortsFeed() {
           <button
             type="button"
             onClick={goRandom}
-            className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/45 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md hover:bg-black/65 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-black/45 px-2.5 md:px-3 py-1.5 text-[11px] md:text-xs font-semibold text-white backdrop-blur-md hover:bg-black/65 transition-colors"
           >
             <Shuffle size={14} />
             Shuffle
@@ -451,7 +451,7 @@ export default function ShortsFeed() {
         </div>
 
         {shortsData.map((video, index) => (
-          <div key={video.id} className="w-full snap-start relative shrink-0 h-[calc(100vh-64px)] md:h-[calc(100vh-72px)]">
+          <div key={video.id} className="w-full snap-start relative shrink-0 h-[calc(100dvh-64px)] md:h-[calc(100dvh-72px)]">
              <div className={cn("h-full w-full transition-[filter] duration-300", !scanMode && activeIndex !== index ? "grayscale-[0.4] brightness-75" : "")}> 
                <ShortVideoPlayer video={video} isActive={activeIndex === index} />
              </div>

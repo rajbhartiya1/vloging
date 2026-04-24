@@ -13,9 +13,15 @@ declare global {
         id?: {
           initialize: (options: {
             client_id: string;
+            use_fedcm_for_prompt?: boolean;
             callback: (response: { credential?: string }) => void;
           }) => void;
-          prompt: () => void;
+          prompt: (callback?: (notification: {
+            isNotDisplayed?: () => boolean;
+            isSkippedMoment?: () => boolean;
+            isDismissedMoment?: () => boolean;
+            getDismissedReason?: () => string;
+          }) => void) => void;
         };
       };
     };
@@ -141,9 +147,10 @@ export default function LoginPage() {
     setIsGoogleLoading(true);
     window.google.accounts.id.initialize({
       client_id: googleClientId,
+      // Avoid noisy FedCM abort logs in some browser states and keep a stable popup flow.
+      use_fedcm_for_prompt: false,
       callback: async ({ credential }) => {
         if (!credential) {
-          setError("Google sign-in was cancelled.");
           setIsGoogleLoading(false);
           return;
         }
@@ -159,7 +166,17 @@ export default function LoginPage() {
         completeAuth(result.user);
       },
     });
-    window.google.accounts.id.prompt();
+    window.google.accounts.id.prompt((notification) => {
+      const notDisplayed = notification.isNotDisplayed?.() ?? false;
+      const skipped = notification.isSkippedMoment?.() ?? false;
+      const dismissed = notification.isDismissedMoment?.() ?? false;
+      const reason = notification.getDismissedReason?.() ?? "";
+
+      // Keep UX quiet on non-fatal prompt moments (including user dismiss/abort states).
+      if (notDisplayed || skipped || (dismissed && reason !== "credential_returned")) {
+        setIsGoogleLoading(false);
+      }
+    });
   };
 
   const handleAppleSignIn = async () => {
@@ -208,23 +225,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-zinc-950">
-      <div className="max-w-md w-full space-y-8 bg-white dark:bg-zinc-900 p-8 md:p-10 rounded-[2rem] shadow-xl border border-gray-100 dark:border-zinc-800">
+    <div className="min-h-dvh flex items-center justify-center py-6 sm:py-10 px-3 sm:px-6 lg:px-8 bg-gray-50 dark:bg-zinc-950">
+      <div className="max-w-md w-full space-y-6 sm:space-y-8 bg-white dark:bg-zinc-900 p-5 sm:p-8 md:p-10 rounded-3xl sm:rounded-[2rem] shadow-xl border border-gray-100 dark:border-zinc-800">
         <div className="text-center">
-          <h2 className="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+          <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
             Welcome back to VlogHub
           </h2>
-          <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
             Sign in to like, comment, and save your favorite videos.
           </p>
         </div>
 
         {/* OAuth Buttons */}
-        <div className="mt-8 flex flex-col gap-3">
+        <div className="mt-6 sm:mt-8 flex flex-col gap-3">
           <Button
             type="button"
             variant="outline"
-            className="w-full flex justify-center items-center py-6 rounded-2xl gap-3 text-base"
+            className="w-full flex justify-center items-center py-5 sm:py-6 rounded-2xl gap-3 text-sm sm:text-base"
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading || isAppleLoading || isLoading}
           >
@@ -236,7 +253,7 @@ export default function LoginPage() {
           <Button
             type="button"
             variant="outline"
-            className="w-full flex justify-center items-center py-6 rounded-2xl gap-3 text-base"
+            className="w-full flex justify-center items-center py-5 sm:py-6 rounded-2xl gap-3 text-sm sm:text-base"
             onClick={handleAppleSignIn}
             disabled={isGoogleLoading || isAppleLoading || isLoading}
           >
@@ -247,7 +264,7 @@ export default function LoginPage() {
           </Button>
         </div>
 
-        <div className="relative mt-8">
+        <div className="relative mt-6 sm:mt-8">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300 dark:border-zinc-700" />
           </div>
@@ -257,7 +274,7 @@ export default function LoginPage() {
         </div>
 
         {/* Auth Form (Email/Pass) */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-6 sm:mt-8 space-y-5 sm:space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Email address</label>
@@ -266,7 +283,7 @@ export default function LoginPage() {
                 type="email"
                 autoComplete="email"
                 required
-                className="py-6 rounded-xl text-base"
+                className="py-5 sm:py-6 rounded-xl text-base"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -279,7 +296,7 @@ export default function LoginPage() {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="py-6 rounded-xl text-base"
+                className="py-5 sm:py-6 rounded-xl text-base"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -301,12 +318,12 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <Button type="submit" disabled={isLoading} className="w-full py-6 rounded-full text-lg font-bold shadow-md hover:shadow-lg transition-all">
+          <Button type="submit" disabled={isLoading} className="w-full py-5 sm:py-6 rounded-full text-base sm:text-lg font-bold shadow-md hover:shadow-lg transition-all">
             {isLoading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
         
-        <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
           Not a member?{' '}
           <Link href="/register" className="font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400">
             Sign up for an account
