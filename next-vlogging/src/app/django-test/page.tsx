@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+const DJANGO_BASE_URL = process.env.NEXT_PUBLIC_DJANGO_API_BASE || "http://127.0.0.1:8000";
+
 export default function DjangoTestPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -9,7 +11,7 @@ export default function DjangoTestPage() {
 
   useEffect(() => {
     // Fetch data from the Django Backend
-    fetch("http://127.0.0.1:8000/api/hello/")
+    fetch(`${DJANGO_BASE_URL}/api/hello/`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch from Django");
         return res.json();
