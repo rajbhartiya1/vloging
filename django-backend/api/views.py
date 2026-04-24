@@ -126,6 +126,24 @@ def _verify_apple_token(identity_token):
     return email
 
 
+def auth_google_config(request):
+    if request.method != "GET":
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    client_ids = [item for item in settings.GOOGLE_OAUTH_CLIENT_IDS if item]
+    if not client_ids:
+        return JsonResponse(
+            {
+                "error": "Google sign-in is not configured on backend.",
+                "code": "google_client_id_missing",
+            },
+            status=503,
+        )
+
+    # Google OAuth web client IDs are public identifiers and safe to expose.
+    return JsonResponse({"clientId": client_ids[0]})
+
+
 @csrf_exempt
 def auth_register(request):
     if request.method != "POST":

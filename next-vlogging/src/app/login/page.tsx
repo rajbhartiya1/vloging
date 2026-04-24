@@ -36,6 +36,7 @@ declare global {
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 const APPLE_CLIENT_ID = process.env.NEXT_PUBLIC_APPLE_CLIENT_ID || "";
 const APPLE_REDIRECT_URI = process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI || "";
+const DJANGO_BASE_URL = process.env.NEXT_PUBLIC_DJANGO_API_BASE || "http://127.0.0.1:8000";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -44,6 +45,7 @@ export default function LoginPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isAppleLoading, setIsAppleLoading] = useState(false);
   const [error, setError] = useState("");
+  const [googleClientId, setGoogleClientId] = useState(GOOGLE_CLIENT_ID);
 
   const completeAuth = (user: { id: number; name: string; email: string }) => {
     document.cookie = "vloghub_auth=true; path=/;";
@@ -86,10 +88,48 @@ export default function LoginPage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (GOOGLE_CLIENT_ID) {
+      return;
+    }
+
+    let isMounted = true;
+
+    const loadGoogleClientId = async () => {
+      try {
+        const response = await fetch(`${DJANGO_BASE_URL}/api/auth/google-config/`, {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as { clientId?: string };
+        if (!isMounted) {
+          return;
+        }
+
+        const value = String(payload.clientId || "").trim();
+        if (value) {
+          setGoogleClientId(value);
+        }
+      } catch {
+        // Keep fallback empty state and show actionable message on click.
+      }
+    };
+
+    void loadGoogleClientId();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const handleGoogleSignIn = async () => {
     setError("");
-    if (!GOOGLE_CLIENT_ID) {
-      setError("Google sign-in is not configured. Add NEXT_PUBLIC_GOOGLE_CLIENT_ID.");
+    if (!googleClientId) {
+      setError("Google sign-in is not configured. Add NEXT_PUBLIC_GOOGLE_CLIENT_ID or set GOOGLE_OAUTH_CLIENT_IDS in Django backend.");
       return;
     }
 
@@ -100,7 +140,7 @@ export default function LoginPage() {
 
     setIsGoogleLoading(true);
     window.google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
+      client_id: googleClientId,
       callback: async ({ credential }) => {
         if (!credential) {
           setError("Google sign-in was cancelled.");
