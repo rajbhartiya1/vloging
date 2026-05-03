@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+import secrets
 from pathlib import Path
 
 import dj_database_url
@@ -34,11 +35,13 @@ def env_list(name: str, default: str = "") -> list[str]:
     return [item.strip() for item in raw.split(",") if item.strip()]
 
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-change-me-in-production')
-
 # SECURITY WARNING: don't run with debug turned on in production!
+# Default to debug in local development so a fresh checkout serves HTTP
+# without requiring a .env file. Production should set DEBUG=false explicitly.
 DEBUG = env_bool('DEBUG', True)
+
+# Use an env-provided key in production; fall back to an ephemeral local key.
+SECRET_KEY = os.getenv('SECRET_KEY', secrets.token_urlsafe(64))
 
 ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', '127.0.0.1,localhost,testserver')
 
