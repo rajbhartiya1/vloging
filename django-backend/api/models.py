@@ -6,6 +6,22 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    avatar = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+
+    def avatar_url(self):
+        try:
+            if self.avatar and hasattr(self.avatar, 'url'):
+                return self.avatar.url
+        except Exception:
+            pass
+        return ''
+
+    def __str__(self):
+        return f"Profile for {self.user.email}"
+
 class Video(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -95,4 +111,9 @@ class PasswordResetToken(models.Model):
 
     def __str__(self):
         return f"{self.user.email}:{self.code}:{'used' if self.used else 'active'}"
+
+
+def create_profile_signal():
+    # placeholder to show where a post_save signal could be wired if desired
+    pass
 

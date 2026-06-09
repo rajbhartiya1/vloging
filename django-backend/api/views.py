@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
 
-from .models import TrackingEvent, UserVideoState, PasswordResetToken
+from .models import Profile, TrackingEvent, UserVideoState, PasswordResetToken
 
 User = get_user_model()
 APPLE_JWKS_CLIENT = jwt.PyJWKClient("https://appleid.apple.com/auth/keys")
@@ -243,60 +243,96 @@ def auth_login(request):
 
 
 @csrf_exempt
-def auth_google(request):
-    if request.method != "POST":
+def auth_profile(request):
+    if request.method not in {"GET", "POST"}:
         return JsonResponse({"error": "Method not allowed"}, status=405)
 
-    payload = _json_payload(request)
-    if payload is None:
-        return JsonResponse({"error": "Invalid JSON payload"}, status=400)
+    if request.method == "GET":
+        email = str(request.GET.get("email") or "").strip().lower()
+        if not email:
+            return JsonResponse({"error": "email query parameter is required"}, status=400)
 
-    identity_token = str(payload.get("idToken") or "").strip()
-    if not identity_token:
-        return JsonResponse({"error": "idToken is required"}, status=400)
+    else:
+        if request.content_type and request.content_type.startswith("multipart/form-data"):
+            email = str(request.POST.get("email") or "").strip().lower()
+            first_name = str(request.POST.get("first_name") or "").strip()
+            username = str(request.POST.get("username") or "").strip()
+            avatar = request.FILES.get("avatar")
+        else:
+            payload = _json_payload(request)
+            if payload is None:
+                return JsonResponse({"error": "Invalid JSON payload"}, status=400)
+
+            email = str(payload.get("email") or "").strip().lower()
+            first_name = str(payload.get("first_name") or "").strip()
+            username = str(payload.get("username") or "").strip()
+            avatar = None
+
+        if not email:
+            return JsonResponse({"error": "email is required"}, status=400)
 
     try:
-        email, display_name = _verify_google_token(identity_token)
-    except Exception:
+        user = User.objects.get(email__iexact=email)
+    except User.DoesNotExist:
         return JsonResponse(
             {
-                "error": "Invalid Google sign-in token",
-                "code": "invalid_google_token",
+                "error": "Account does not exist. Please login first.",
+                "code": "not_found",
             },
-            status=401,
+            status=404,
         )
 
-    user, created = _get_or_create_social_user(email, display_name)
-    return _social_auth_response(user, created, "google")
+    profile, _ = Profile.objects.get_or_create(user=user)
+
+    if request.method == "POST":
+        changed_fields = []
+        if first_name:
+            user.first_name = first_name
+            changed_fields.append("first_name")
+        if username:
+            user.username = username
+            changed_fields.append("username")
+        if changed_fields:
+            user.save(update_fields=changed_fields)
+
+        if avatar is not None:
+            profile.avatar = avatar
+            profile.save(update_fields=["avatar"])
+
+    return JsonResponse(
+        {
+            "status": "ok",
+            "user": {
+                "id": user.id,
+                "name": user.first_name or user.username,
+                "username": user.username,
+                "email": user.email,
+                "avatar": profile.avatar_url(),
+            },
+        }
+    )
+
+
+@csrf_exempt
+def auth_google(request):
+    return JsonResponse(
+        {
+            "error": "Google sign-in is disabled.",
+            "code": "social_login_disabled",
+        },
+        status=403,
+    )
 
 
 @csrf_exempt
 def auth_apple(request):
-    if request.method != "POST":
-        return JsonResponse({"error": "Method not allowed"}, status=405)
-
-    payload = _json_payload(request)
-    if payload is None:
-        return JsonResponse({"error": "Invalid JSON payload"}, status=400)
-
-    identity_token = str(payload.get("idToken") or "").strip()
-    full_name = str(payload.get("fullName") or "").strip()
-    if not identity_token:
-        return JsonResponse({"error": "idToken is required"}, status=400)
-
-    try:
-        email = _verify_apple_token(identity_token)
-    except Exception:
-        return JsonResponse(
-            {
-                "error": "Invalid Apple sign-in token",
-                "code": "invalid_apple_token",
-            },
-            status=401,
-        )
-
-    user, created = _get_or_create_social_user(email, full_name)
-    return _social_auth_response(user, created, "apple")
+    return JsonResponse(
+        {
+            "error": "Apple sign-in is disabled.",
+            "code": "social_login_disabled",
+        },
+        status=403,
+    )
 
 
 @csrf_exempt
