@@ -2,8 +2,9 @@ import React from 'react';
 import SeriesHero from '@/components/SeriesHero';
 import PlaylistSidebar from '@/components/PlaylistSidebar';
 
-export default function SeriesPage({ params }: { params: { slug: string } }) {
-  const formattedSlug = params.slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+export default async function SeriesPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const formattedSlug = (slug ?? 'series').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
   return (
     <div className="max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8 space-y-6">
